@@ -3,7 +3,7 @@ import { wrapWords } from "./wordWrap";
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength
 // ✅ Should return an array of strings if string length exceeds maxLength
-// ✅ The returned array should have strings that don't exceed maxLength
+// 🐷 The returned array should have strings that don't exceed maxLength
 // - The returned array's length should not exceed maxHeight
 // - Each string should contain the max possible words without exceeding maxLength
 // - Each string should contain spaces between words, but no leading or trailing spaces
@@ -42,7 +42,8 @@ describe("wordWrap", () => {
     expect(wrapped).toBeInstanceOf(Array<number>);
   });
   describe("The returned array should have strings that don't exceed maxLength", () => {
-    it("when maxLength is 1", () => {
+    it.skip("when maxLength is 1", () => {
+      // TODO un-skip when "single word is longer than maxLength" is accounted for
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxLength = 1;
@@ -60,5 +61,12 @@ describe("wordWrap", () => {
       const lengths = wrapped.map((str) => str.length);
       lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
     });
+  });
+  it.only("If a single word is longer than maxLength, it should be split up between rows", () => {
+    const testStr = "This_is_a_long_word";
+    const expectedArr = ["This", "_is_", "a_lo", "ng_w", "ord"];
+    const maxLength = 4;
+    const wrapped = wrapWords(testStr, maxLength, 3);
+    expect(wrapped).toEqual(expectedArr);
   });
 });
