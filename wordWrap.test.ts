@@ -2,7 +2,7 @@ import { wrapWords } from "./wordWrap";
 
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength
-// - Should return an array of strings if string length exceeds maxLength
+// ✅ Should return an array of strings if string length exceeds maxLength
 // - Should return an array of strings or string, depending on if string length exceeds maxLength
 // - The returned array should have strings that don't exceed maxLength
 // - The returned array's length should not exceed maxHeight
@@ -37,7 +37,13 @@ describe("wordWrap", () => {
     const result2 = wrapWords(string, string.length + 1, Infinity);
     expect(typeof result2).toBe("string");
   });
-
+  it("Should return an array of strings if string length exceeds maxLength", () => {
+    // 6 + space + 4 + space + 2 + space + 1 + space + 4
+    const testStr = "Hello, this is a test"; // 21
+    const maxLength = 7;
+    const wrapped = wrapWords(testStr, maxLength, Infinity);
+    expect(wrapped).toBeInstanceOf(Array<number>);
+  });
   it("Should limit the strings to a max width", () => {
     const maxLength = 7;
     const wrapped = wrapWords(testStr, maxLength, Infinity);
