@@ -4,6 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "jest",
+    "test:w": "npm run test -- --watch",
     "start": "ts-node index.ts",
     "start:w": "nodemon -q --exec ts-node index.ts"
   },

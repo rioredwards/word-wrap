@@ -1,4 +1,7 @@
-export function wrapWords(str: string, width: number, maxHeight: number): string[] | string {
+export function wrapWords(str: string, maxWidth: number, maxHeight: number): string[] | string {
+  // Check if string doesn't need to be wrapped
+  if (str.length <= maxWidth) return str;
+
   const words = str.split(/\s+/); // Split on any whitespace
   const lines: string[] = [];
   let currentLine = "";
@@ -7,10 +10,10 @@ export function wrapWords(str: string, width: number, maxHeight: number): string
   for (let word of words) {
     // Space left in line is the allotted width minus the currentLine length
     // Minus an additional one for a space between words
-    spaceLeftInLine = width - currentLine.length - (currentLine.length ? 1 : 0);
+    spaceLeftInLine = maxWidth - currentLine.length - (currentLine.length ? 1 : 0);
 
     // Single word is longer than allotted width
-    if (word.length > width) {
+    if (word.length > maxWidth) {
       do {
         // Cut word and add to current line
         const wordStart = word.substring(0, spaceLeftInLine);
@@ -21,7 +24,7 @@ export function wrapWords(str: string, width: number, maxHeight: number): string
 
         // Reassign word because it may need to be sliced again
         word = word.substring(spaceLeftInLine);
-        spaceLeftInLine = width;
+        spaceLeftInLine = maxWidth;
       } while (word !== "");
     } else {
       // Adding word is longer than allotted width
@@ -35,7 +38,7 @@ export function wrapWords(str: string, width: number, maxHeight: number): string
   }
 
   // Add possible remaining currentLine
-  lines.push(currentLine.substring(0, width));
+  lines.push(currentLine.substring(0, maxWidth));
 
   return lines; // Pad all lines to the width
 }

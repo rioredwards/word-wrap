@@ -1,5 +1,5 @@
 import size from "window-size";
-import { wrapWords } from "./customWordWrap";
+import { wrapWords } from "./wordWrap";
 
 console.clear();
 // console.log("\n\n\n\n\n\n\n");
