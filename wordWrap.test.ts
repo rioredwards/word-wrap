@@ -3,7 +3,7 @@ import { wrapWords } from "./wordWrap";
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength
 // ✅ Should return an array of strings if string length exceeds maxLength
-// - The returned array should have strings that don't exceed maxLength
+// ✅ The returned array should have strings that don't exceed maxLength
 // - The returned array's length should not exceed maxHeight
 // - Each string should contain the max possible words without exceeding maxLength
 // - Each string should contain spaces between words, but no leading or trailing spaces
@@ -22,6 +22,8 @@ import { wrapWords } from "./wordWrap";
 // - maxLength and maxHeight must be integers
 // - maxLength must be greater than 0
 // - maxHeight must be greater than 0
+// - maxLength could be 1
+// - maxHeight could be 1
 
 describe("wordWrap", () => {
   it("Should return a string if string length is less than or equal to maxLength", () => {
@@ -39,13 +41,24 @@ describe("wordWrap", () => {
     const wrapped = wrapWords(testStr, maxLength, Infinity);
     expect(wrapped).toBeInstanceOf(Array<number>);
   });
-  it("The returned array should have strings that don't exceed maxLength", () => {
-    // 6 + space + 4 + space + 2 + space + 1 + space + 4
-    const testStr = "Hello, this is a test"; // 21
-    const maxLength = 7;
-    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+  describe("The returned array should have strings that don't exceed maxLength", () => {
+    it("when maxLength is 1", () => {
+      // 6 + space + 4 + space + 2 + space + 1 + space + 4
+      const testStr = "Hello, this is a test"; // 21
+      const maxLength = 1;
+      const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
 
-    const lengths = wrapped.map((str) => str.length);
-    lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
+      const lengths = wrapped.map((str) => str.length);
+      lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
+    });
+    it("when maxLength is not 1", () => {
+      // 6 + space + 4 + space + 2 + space + 1 + space + 4
+      const testStr = "Hello, this is a test"; // 21
+      const maxLength = 7;
+      const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+
+      const lengths = wrapped.map((str) => str.length);
+      lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
+    });
   });
 });

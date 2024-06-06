@@ -2,43 +2,38 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
   // Check if string doesn't need to be wrapped
   if (str.length <= maxWidth) return str;
 
-  const words = str.split(/\s+/); // Split on any whitespace
+  let char: string = "";
+  let word: string = "";
+  let line: string = "";
   const lines: string[] = [];
-  let currentLine = "";
   let spaceLeftInLine: number;
 
-  for (let word of words) {
-    // Space left in line is the allotted width minus the currentLine length
-    // Minus an additional one for a space between words
-    spaceLeftInLine = maxWidth - currentLine.length - (currentLine.length ? 1 : 0);
+  for (let i = 0; i < str.length; i++) {
+    char = str[i];
 
-    // Single word is longer than allotted width
-    if (word.length > maxWidth) {
-      do {
-        // Cut word and add to current line
-        const wordStart = word.substring(0, spaceLeftInLine);
-        // If line already has content, add a space for between words
-        currentLine += (currentLine ? " " : "") + wordStart;
-        lines.push(currentLine);
-        currentLine = "";
-
-        // Reassign word because it may need to be sliced again
-        word = word.substring(spaceLeftInLine);
-        spaceLeftInLine = maxWidth;
-      } while (word !== "");
+    if (char !== " ") {
+      // currChar is not a space, so add it to word
+      word += char;
     } else {
-      // Adding word is longer than allotted width
-      if (spaceLeftInLine - word.length < 0) {
-        lines.push(currentLine.trim());
-        currentLine = ""; // Reset for the next line
+      // currChar is a space
+      // Check if word can be added to line (account for space between words)
+      spaceLeftInLine = maxWidth - line.length - (line.length && 1);
+      if (spaceLeftInLine - word.length >= 0) {
+        // Line has room for word
+        // Add space if line already has content, then add word
+        line += (line.length > 0 ? " " : "") + word;
+      } else {
+        // Line doesn't have room for word
+        // Current line can be added to lines array
+        lines.push(line);
+        // Start new line with word
+        line = word;
       }
-      currentLine += (currentLine ? " " : "") + word; // Add word with space (if not first word on the line)
-      if (lines.length === maxHeight) break;
+      word = "";
     }
   }
 
-  // Add possible remaining currentLine
-  lines.push(currentLine.substring(0, maxWidth));
-
-  return lines; // Pad all lines to the width
+  return lines;
 }
+
+// Start by just building words
