@@ -16,6 +16,7 @@ import { wrapWords } from "./customWordWrap";
 // - If a string contains emojis, a single emoji's unicode should not be broken by wrapping (many Emoji's are made up of multiple groups of unicode)
 
 // Edge cases:
+// - str should be a string
 // - If a string is empty, then just return the string
 // - maxLength and maxHeight must be integers
 // - maxLength must be greater than 0
