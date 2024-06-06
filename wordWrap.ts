@@ -13,6 +13,14 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
   for (let i = 0; i < str.length; i++) {
     char = str[i];
 
+    // line is already full - push existing line
+    spaceLeftInLine = maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
+    if (spaceLeftInLine <= 0) {
+      lines.push(line);
+      line = "";
+      word = "";
+    }
+
     if (char !== " ") {
       // char is not a space
       if (word.length < maxWidth) {
@@ -20,15 +28,14 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         // add it to word
         word += char;
       } else {
-        // word is maxWidth and will need to be split up
         // split word into existing line
-        spaceLeftInLine = maxWidth - line.length - (line.length && 1);
+        // and add rest to next line
         const splitWordStart = word.substring(0, spaceLeftInLine);
-        const splitWordEnd = word.substring(spaceLeftInLine);
+        word = word.substring(spaceLeftInLine);
         line += (line.length > 0 ? " " : "") + splitWordStart;
         lines.push(line);
         // insert the end of the splitWord to next line
-        line = splitWordEnd;
+        line = word;
         word = char;
       }
     } else {
