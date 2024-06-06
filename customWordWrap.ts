@@ -1,44 +1,41 @@
-// export default function (str: string, width: number): string[] | string {
-//   if (str.length < width) return str;
-
-//   const newRegexString =
-//     ".{1," + width + "}([\\s\u200B]+|$)|(?<=.{1," + width + "})[^\\s\u200B]+([\\s\u200B]+|$)";
-//   // const regexString = ".{1," + width + "}([\\s\u200B]+|$)|[^\\s\u200B]+?([\\s\u200B]+|$)";
-
-//   const re = new RegExp(newRegexString, "g");
-//   const lines = str.match(re) || [];
-//   const result = lines.map((line) => {
-//     if (line.at(-1) === "\n") {
-//       line = line.slice(0, line.length - 1);
-//     }
-//     return line;
-//   });
-
-//   return result;
-// }
-
-export default function (str: string, width: number, maxHeight: number): string[] | string {
+export function wrapWords(str: string, width: number, maxHeight: number): string[] | string {
   const words = str.split(/\s+/); // Split on any whitespace
-  const lines = [];
+  const lines: string[] = [];
   let currentLine = "";
+  let spaceLeftInLine: number;
 
-  const wordsTruncated = words.flatMap((word) => {
+  for (let word of words) {
+    // Space left in line is the allotted width minus the currentLine length
+    // Minus an additional one for a space between words
+    spaceLeftInLine = width - currentLine.length - (currentLine.length ? 1 : 0);
+
+    // Single word is longer than allotted width
     if (word.length > width) {
-      return [word.substring(0, width), word.substring(width)];
-    } else {
-      return word;
-    }
-  });
+      do {
+        // Cut word and add to current line
+        const wordStart = word.substring(0, spaceLeftInLine);
+        // If line already has content, add a space for between words
+        currentLine += (currentLine ? " " : "") + wordStart;
+        lines.push(currentLine);
+        currentLine = "";
 
-  for (const word of wordsTruncated) {
-    if (currentLine.length + word.length + 1 > width) {
-      // +1 for the space between words
-      lines.push(currentLine.trim());
-      currentLine = ""; // Reset for the next line
+        // Reassign word because it may need to be sliced again
+        word = word.substring(spaceLeftInLine);
+        spaceLeftInLine = width;
+      } while (word !== "");
+    } else {
+      // Adding word is longer than allotted width
+      if (spaceLeftInLine - word.length < 0) {
+        lines.push(currentLine.trim());
+        currentLine = ""; // Reset for the next line
+      }
+      currentLine += (currentLine ? " " : "") + word; // Add word with space (if not first word on the line)
+      if (lines.length === maxHeight) break;
     }
-    currentLine += (currentLine ? " " : "") + word; // Add word with space (if not first word on the line)
-    if (lines.length === maxHeight) break;
   }
+
+  // Add possible remaining currentLine
+  lines.push(currentLine.substring(0, width));
 
   return lines; // Pad all lines to the width
 }

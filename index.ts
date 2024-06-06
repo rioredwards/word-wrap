@@ -1,5 +1,5 @@
 import size from "window-size";
-import wrap from "./customWordWrap";
+import { wrapWords } from "./customWordWrap";
 
 console.clear();
 // console.log("\n\n\n\n\n\n\n");
@@ -15,11 +15,11 @@ let textWithEmoji = "👍🍔👍👍🧠 👍👍👍 👍👍OOOOOOOO OO👍�
 let emojiText =
   " 💁🏼 💁🏽 💁🏾 💁🏿 🙋🏻 🙋🏼 🙋🏽 🙋🏾 🙋🏿 🧏🏻 🧏🏼 🧏🏽 🧏🏾 🧏🏿 🙇🏻 🙇🏼 🙇🏽 🙇🏾 🙇🏿 🤦🏻 🤦🏼 🤦🏽 🤦🏾 🤦🏿 🤷🏻 🤷🏼 🤷🏽 🤷🏾 🤷🏿 👮🏻 👮🏼 👮🏽 👮🏾 👮🏿 🕵🏻 🕵🏼 🕵🏽 🕵🏾 🕵🏿 💂🏻 💂🏼 💂🏽 💂🏾 💂🏿 🥷🏻 🥷🏼 🥷🏽 🥷🏾 🥷🏿 👷🏻 👷🏼 👷🏽 👷🏾 👷🏿 🤴🏻 🤴🏼 🤴🏽 🤴🏾 🤴🏿 👸🏻 👸🏼 👸🏽 👸🏾 👸🏿 👳🏻 👳🏼 👳🏽 👳🏾 👳🏿 👲🏻 👲🏼 👲🏽 👲🏾 👲🏿 🧕🏻 🧕🏼 🧕🏽 🧕🏾 🧕🏿 🤵🏻 🤵🏼 🤵🏽 🤵🏾 🤵🏿 👰🏻 👰🏼 👰🏽 👰🏾 👰🏿 🤰🏻 🤰🏼 🤰🏽 🤰🏾 🤰🏿 🤱🏻 🤱🏼 🤱🏽 🤱🏾 🤱🏿 👼🏻 👼🏼 👼🏽 👼🏾 👼🏿 🎅🏻 🎅🏼 🎅🏽 🎅🏾 🎅🏿 🤶🏻 🤶🏼 🤶🏽 🤶🏾 🤶🏿 🦸🏻 🦸🏼 🦸🏽 🦸🏾 🦸🏿 🦹🏻 🦹🏼 🦹🏽 🦹🏾 🦹🏿 🧙🏻 🧙🏼 🧙🏽 🧙🏾 🧙🏿 🧚🏻 🧚🏼 🧚🏽 🧚🏾 🧚🏿 🧛🏻 🧛🏼 🧛🏽 🧛🏾 🧛🏿 🧜🏻 🧜🏼 🧜🏽 🧜🏾 🧜🏿 🧝🏻 🧝🏼 🧝🏽 🧝🏾 🧝🏿 💆🏻 💆🏼 💆🏽 💆🏾 💆🏿 💇🏻 💇🏼 💇🏽 💇🏾 💇🏿 🚶🏻 🚶🏼 🚶🏽 🚶🏾 🚶🏿 🧍🏻 🧍🏼 🧍🏽 🧍🏾 🧍🏿 🧎🏻 🧎🏼 🧎🏽 🧎🏾 🧎🏿 🏃🏻 🏃🏼 🏃🏽 🏃🏾 🏃🏿 💃🏻 💃🏼 💃🏽 💃🏾 💃🏿 🕺🏻 🕺🏼 🕺🏽 🕺🏾 🕺🏿 🕴🏻 🕴🏼 🕴🏽 🕴🏾 🕴🏿 🧖🏻 🧖🏼 🧖🏽 ";
 
-// const wrapped = wrap(textWithEmoji, 10, 10);
-// if (typeof wrapped !== "string") {
-//   const wrappedJoined = wrapped.join("\n");
-//   console.log(wrappedJoined);
-// }
+const wrapped = wrapWords(textWithEmoji, 10, 10);
+if (typeof wrapped !== "string") {
+  const wrappedJoined = wrapped.join("\n");
+  console.log(wrappedJoined);
+}
 
 const substringTest = "Hello".substring(10);
 
