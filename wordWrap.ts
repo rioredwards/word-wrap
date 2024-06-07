@@ -19,6 +19,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       lines.push(line);
       line = "";
       word = "";
+      spaceLeftInLine = maxWidth;
     }
 
     if (char !== " ") {
@@ -31,17 +32,16 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         // split word into existing line
         // and add rest to next line
         const splitWordStart = word.substring(0, spaceLeftInLine);
-        word = word.substring(spaceLeftInLine);
+        const splitWordEnd = word.substring(spaceLeftInLine);
         line += (line.length > 0 ? " " : "") + splitWordStart;
         lines.push(line);
         // insert the end of the splitWord to next line
-        line = word;
+        line = splitWordEnd;
         word = char;
       }
     } else {
       // char is a space
       // Check if word can be added to line (account for space between words)
-      spaceLeftInLine = maxWidth - line.length - (line.length && 1);
       if (spaceLeftInLine - word.length >= 0) {
         // Line has room for word
         // Add space if line already has content, then add word
