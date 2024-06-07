@@ -1,6 +1,6 @@
 export function wrapWords(str: string, maxWidth: number, maxHeight: number): string[] | string {
   // Check if string doesn't need to be wrapped
-  if (str.length <= maxWidth) return str;
+  if (str.length <= maxWidth && !str.includes("\n")) return str;
 
   str = str.trim();
   let char: string = "";
@@ -23,8 +23,41 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       spaceLeftInLine = maxWidth;
     }
 
-    if (char !== " ") {
-      // char is not a space
+    if (char === " ") {
+      // char is a space
+      // Check if word can be added to line (account for space between words)
+      if (spaceLeftInLine - word.length >= 0) {
+        // Line has room for word
+        // Add space if line already has content, then add word
+        line += (line.length > 0 ? " " : "") + word;
+      } else {
+        // Line doesn't have room for word
+        // Current line can be added to lines array
+        lines.push(line);
+        if (lines.length >= maxHeight) return lines;
+        // Start new line with word
+        line = word;
+      }
+      word = "";
+    } else if (char === "\n") {
+      if (spaceLeftInLine - word.length >= 0) {
+        // Line has room for word
+        // Add space if line already has content, then add word
+        line += (line.length > 0 ? " " : "") + word;
+      } else {
+        // Line doesn't have room for word
+        lines.push(line);
+        if (lines.length >= maxHeight) return lines;
+        line = word;
+      }
+      // split the line
+      word = "";
+      lines.push(line);
+      if (lines.length >= maxHeight) return lines;
+      // ignore the newline
+      line = "";
+    } else {
+      // char is a regular character
       if (word.length < maxWidth) {
         // if word length isn't maxWidth
         // add it to word
@@ -41,22 +74,6 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         line = splitWordEnd;
         word = char;
       }
-    } else {
-      // char is a space
-      // Check if word can be added to line (account for space between words)
-      if (spaceLeftInLine - word.length >= 0) {
-        // Line has room for word
-        // Add space if line already has content, then add word
-        line += (line.length > 0 ? " " : "") + word;
-      } else {
-        // Line doesn't have room for word
-        // Current line can be added to lines array
-        lines.push(line);
-        if (lines.length >= maxHeight) return lines;
-        // Start new line with word
-        line = word;
-      }
-      word = "";
     }
   }
 
@@ -74,7 +91,6 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
 
   // Account for last line
   if (line.length) {
-    console.log("🦀 LINE 75");
     lines.push(line);
   }
 

@@ -130,4 +130,18 @@ describe("wordWrap", () => {
     expect(wrapped[1][4]).toBe(" ");
     expect(wrapped[2][1]).toBe(" ");
   });
+  it("should preserve the functionality of newline chars by splitting the string at that point, but removing the newline char", () => {
+    // 6 + newline + space + 4 + space + 2 + newline + space + 1 + space + 4
+    const testStr = "Hello,\n this is\n a test"; // 23
+    const expected = [
+      "Hello,", // <- split because of newline
+      "this is", // <- split because of newline
+      "a test",
+    ];
+    const maxLength = 23;
+    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+
+    wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
+    expect(wrapped).toEqual(expected);
+  });
 });
