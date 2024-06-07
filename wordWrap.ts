@@ -45,7 +45,6 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
         // Line doesn't have space for word
         // Current line can be added to lines array & new line started with word
         addLineToLines(line, lines);
-        if (lines.length >= maxHeight) return lines;
         line = [...word];
       }
       if (grapheme === undefined) {
@@ -60,12 +59,10 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
       } else {
         // Line doesn't have space for word
         addLineToLines(line, lines);
-        if (lines.length >= maxHeight) return lines;
         line = [...word];
       }
       // split the line & ignore the newline
       addLineToLines(line, lines);
-      if (lines.length >= maxHeight) return lines;
       word = [];
       line = [];
     } else if (grapheme === "\r") {
@@ -80,7 +77,6 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
         const splitWordEnd = word.splice(spaceLeftInLine);
         addWordToLine(word, line);
         addLineToLines(line, lines);
-        if (lines.length >= maxHeight) return lines;
         // insert the end of the splitWord to next line
         line = [...splitWordEnd];
         word = [grapheme];
@@ -90,12 +86,15 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
     spaceLeftInLine = getSpaceLeftInLine(line, maxWidth);
     if (spaceLeftInLine <= 0) {
       addLineToLines(line, lines);
-      if (lines.length >= maxHeight) return lines;
       line = [];
       word = [];
       spaceLeftInLine = maxWidth;
     }
+    if (lines.length >= maxHeight) break;
   }
-  console.log("🐙 Exited Late");
+
+  // Ensure array isn't longer than maxHeight
+  lines.splice(maxHeight);
+
   return lines;
 }
