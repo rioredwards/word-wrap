@@ -5,8 +5,8 @@ import { wrapWords } from "./wordWrap";
 // ✅ Should return an array of strings if string length exceeds maxLength
 // ✅ The returned array should have strings that don't exceed maxLength
 // ✅ The returned array's length should not exceed maxHeight
-// - Each string should contain the max possible words without exceeding maxLength
-// - Each string should contain spaces between words, but no leading or trailing spaces
+// ✅ (Implied, not tested for) Each string should contain the max possible words without exceeding maxLength
+// ✅ Each string should contain spaces between words, but no leading or trailing spaces
 // ✅ If a single word is longer than maxLength, it should be split up between rows
 // - If a string contains newline characters, it should preserve the functionality by splitting the preceding and following string at that point, but removing the newline char
 // - If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
@@ -105,5 +105,29 @@ describe("wordWrap", () => {
 
       expect(wrapped.length).toBe(4);
     });
+  });
+  it("Each string should contain no leading or trailing spaces", () => {
+    const testStr = "Hello, this is a test with a little bit more content, just to be extra sure.";
+    const maxLength = 7;
+    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+    wrapped.forEach((string) => {
+      expect(string.at(0)).not.toBe(" ");
+      expect(string.at(-1)).not.toBe(" ");
+    });
+  });
+  it("Each string should contain spaces between words", () => {
+    // 6 + space + 4 + space + 2 + space + 1 + space + 4
+    const testStr = "Hello, this is a test"; // 21
+    const expected = [
+      "Hello,",
+      "this is", // <- space at [1][4]
+      "a test", // <- space at [2][1]
+    ];
+    const maxLength = 7;
+    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+
+    expect(wrapped).toEqual(expected);
+    expect(wrapped[1][4]).toBe(" ");
+    expect(wrapped[2][1]).toBe(" ");
   });
 });
