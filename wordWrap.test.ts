@@ -8,7 +8,7 @@ import { wrapWords } from "./wordWrap";
 // ✅ (Implied, not tested for) Each string should contain the max possible words without exceeding maxLength
 // ✅ Each string should contain spaces between words, but no leading or trailing spaces
 // ✅ If a single word is longer than maxLength, it should be split up between rows
-// - If a string contains newline characters, it should preserve the functionality by splitting the preceding and following string at that point, but removing the newline char
+// ✅ If a string contains newline characters, it should preserve the functionality by splitting the preceding and following string at that point, but removing the newline char
 // - If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
 // - If a string contains carriage returns \r, they should be ignored
 // - If a string contains consecutive spaces, they should be preserved only if they appear between words on a line. If they should start or end a line, then discard them
@@ -131,15 +131,27 @@ describe("wordWrap", () => {
     expect(wrapped[2][1]).toBe(" ");
   });
   it("should preserve the functionality of newline chars by splitting the string at that point, but removing the newline char", () => {
-    // 6 + newline + space + 4 + space + 2 + newline + space + 1 + space + 4
-    const testStr = "Hello,\n this is\n a test"; // 23
+    const testStr = "Hello,\n this is\n a test";
     const expected = [
       "Hello,", // <- split because of newline
       "this is", // <- split because of newline
       "a test",
     ];
-    const maxLength = 23;
-    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+    const wrapped = wrapWords(testStr, Infinity, Infinity) as Array<string>;
+
+    wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
+    expect(wrapped).toEqual(expected);
+  });
+  it("should handle consecutive newlines by creating lines with empty strings", () => {
+    const testStr = "Hello,\n\n\n this is\n a test";
+    const expected = [
+      "Hello,", // <- split because of newline
+      "", // <- split because of newline
+      "", // <- split because of newline
+      "this is", // <- split because of newline
+      "a test",
+    ];
+    const wrapped = wrapWords(testStr, Infinity, Infinity) as Array<string>;
 
     wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
     expect(wrapped).toEqual(expected);
