@@ -174,4 +174,12 @@ describe("wordWrap", () => {
 
     expect(wrapped).toEqual(expected);
   });
+  it("If a string contains consecutive spaces, and they would be placed between words on a line, then include them", () => {
+    const testStr = "Hello   this is a   test"; // 3 spaces
+    const expected = ["Hello", "this is a", "test"];
+    const maxWidth = 10;
+    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+
+    expect(wrapped).toEqual(expected);
+  });
 });

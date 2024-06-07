@@ -16,7 +16,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
     // line is already full - push existing line
     spaceLeftInLine = maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
     if (spaceLeftInLine <= 0) {
-      lines.push(line);
+      lines.push(line.trim());
       if (lines.length >= maxHeight) return lines;
       line = "";
       word = "";
@@ -33,7 +33,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       } else {
         // Line doesn't have room for word
         // Current line can be added to lines array
-        lines.push(line);
+        lines.push(line.trim());
         if (lines.length >= maxHeight) return lines;
         // Start new line with word
         line = word;
@@ -46,13 +46,13 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         line += (line.length > 0 ? " " : "") + word;
       } else {
         // Line doesn't have room for word
-        lines.push(line);
+        lines.push(line.trim());
         if (lines.length >= maxHeight) return lines;
         line = word;
       }
       // split the line
       word = "";
-      lines.push(line);
+      lines.push(line.trim());
       if (lines.length >= maxHeight) return lines;
       // ignore the newline
       line = "";
@@ -71,7 +71,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         const splitWordEnd = word.substring(spaceLeftInLine);
         line += (line.length > 0 ? " " : "") + splitWordStart;
         if (lines.length >= maxHeight) return lines;
-        lines.push(line);
+        lines.push(line.trim());
         // insert the end of the splitWord to next line
         line = splitWordEnd;
         word = char;
@@ -90,14 +90,14 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       line += (line.length > 0 ? " " : "") + word;
     } else {
       if (lines.length >= maxHeight) return lines;
-      lines.push(line);
+      lines.push(line.trim());
       line = word;
     }
   }
 
   // Account for last line
   if (line.length) {
-    lines.push(line);
+    lines.push(line.trim());
   }
 
   return lines;
