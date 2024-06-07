@@ -56,6 +56,8 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       if (lines.length >= maxHeight) return lines;
       // ignore the newline
       line = "";
+    } else if (char === "\r") {
+      // Do nothing. These are ignored completely
     } else {
       // char is a regular character
       if (word.length < maxWidth) {
@@ -86,6 +88,10 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
       // Line has room for word
       // Add space if line already has content, then add word
       line += (line.length > 0 ? " " : "") + word;
+    } else {
+      if (lines.length >= maxHeight) return lines;
+      lines.push(line);
+      line = word;
     }
   }
 

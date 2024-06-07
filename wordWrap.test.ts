@@ -9,7 +9,7 @@ import { wrapWords } from "./wordWrap";
 // ✅ Each string should contain spaces between words, but no leading or trailing spaces
 // ✅ If a single word is longer than maxLength, it should be split up between rows
 // ✅ If a string contains newline characters, it should preserve the functionality by splitting the preceding and following string at that point, but removing the newline char
-// - If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
+// ✅ If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
 // - If a string contains carriage returns \r, they should be ignored
 // - If a string contains consecutive spaces, they should be preserved only if they appear between words on a line. If they should start or end a line, then discard them
 // - If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)
@@ -154,6 +154,15 @@ describe("wordWrap", () => {
     const wrapped = wrapWords(testStr, Infinity, Infinity) as Array<string>;
 
     wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
+    expect(wrapped).toEqual(expected);
+  });
+  it("should completely ignore carriage returns", () => {
+    const testStr = "Hello,\r\r this is a test";
+    const expected = ["Hello,", "this", "is a", "test"];
+    const maxWidth = 6;
+    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+
+    wrapped.forEach((string) => expect(string.includes("\r")).toBe(false));
     expect(wrapped).toEqual(expected);
   });
 });
