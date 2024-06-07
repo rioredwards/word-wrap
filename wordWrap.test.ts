@@ -3,8 +3,8 @@ import { wrapWords } from "./wordWrap";
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength
 // ✅ Should return an array of strings if string length exceeds maxLength
-// 🐷 The returned array should have strings that don't exceed maxLength
-// - The returned array's length should not exceed maxHeight
+// ✅ The returned array should have strings that don't exceed maxLength
+// ✅ The returned array's length should not exceed maxHeight
 // - Each string should contain the max possible words without exceeding maxLength
 // - Each string should contain spaces between words, but no leading or trailing spaces
 // ✅ If a single word is longer than maxLength, it should be split up between rows
@@ -43,7 +43,6 @@ describe("wordWrap", () => {
   });
   describe("The returned array should have strings that don't exceed maxLength", () => {
     it("when maxLength is 1", () => {
-      // TODO un-skip when "single word is longer than maxLength" is accounted for
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxLength = 1;
@@ -87,6 +86,24 @@ describe("wordWrap", () => {
       const maxLength = 4;
       const wrapped = wrapWords(testStr, maxLength, Infinity);
       expect(wrapped).toEqual(expectedArr);
+    });
+  });
+  describe("The returned array should have a height that doesn't exceed maxHeight", () => {
+    it("when maxHeight is 1", () => {
+      // 6 + space + 4 + space + 2 + space + 1 + space + 4
+      const testStr = "Hello, this is a test"; // 21
+      const maxHeight = 1;
+      const wrapped = wrapWords(testStr, 7, maxHeight) as Array<string>;
+
+      expect(wrapped.length).toBe(1);
+    });
+    it("when maxHeight is not 1", () => {
+      // 6 + space + 4 + space + 2 + space + 1 + space + 4
+      const testStr = "Hello, this is a test"; // 21
+      const maxHeight = 4;
+      const wrapped = wrapWords(testStr, 3, maxHeight) as Array<string>;
+
+      expect(wrapped.length).toBe(4);
     });
   });
 });

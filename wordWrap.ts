@@ -17,6 +17,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
     spaceLeftInLine = maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
     if (spaceLeftInLine <= 0) {
       lines.push(line);
+      if (lines.length >= maxHeight) return lines;
       line = "";
       word = "";
       spaceLeftInLine = maxWidth;
@@ -34,6 +35,7 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         const splitWordStart = word.substring(0, spaceLeftInLine);
         const splitWordEnd = word.substring(spaceLeftInLine);
         line += (line.length > 0 ? " " : "") + splitWordStart;
+        if (lines.length >= maxHeight) return lines;
         lines.push(line);
         // insert the end of the splitWord to next line
         line = splitWordEnd;
@@ -50,12 +52,15 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
         // Line doesn't have room for word
         // Current line can be added to lines array
         lines.push(line);
+        if (lines.length >= maxHeight) return lines;
         // Start new line with word
         line = word;
       }
       word = "";
     }
   }
+
+  if (lines.length >= maxHeight) return lines;
 
   // Account for last word
   if (word.length > 0) {
@@ -68,7 +73,8 @@ export function wrapWords(str: string, maxWidth: number, maxHeight: number): str
   }
 
   // Account for last line
-  if (line.length > 0) {
+  if (line.length) {
+    console.log("🦀 LINE 75");
     lines.push(line);
   }
 
