@@ -11,7 +11,7 @@ import { wrapWords } from "./wordWrap";
 // ✅ If a string contains newline characters, it should preserve the functionality by splitting the preceding and following string at that point, but removing the newline char
 // ✅ If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
 // ✅ If a string contains carriage returns \r, they should be ignored
-// - If a string contains consecutive spaces, they should be preserved only if they appear between words on a line. If they should start or end a line, then discard them
+// ✅ If a string contains consecutive spaces, they should be preserved only if they appear between words on a line. If they should start or end a line, then discard them
 // - If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)
 // - If a string contains emojis, then count the length of each emoji as 2 (this is the default rendered width on my terminal, but could be parametrized)
 // - If a string contains emojis, a single emoji's unicode should not be broken by wrapping (many Emoji's are made up of multiple groups of unicode)
@@ -170,7 +170,6 @@ describe("wordWrap", () => {
     const expected = ["Hello   this", "is a   test"];
     const maxWidth = 12;
     const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
-    console.log({ wrapped });
 
     expect(wrapped).toEqual(expected);
   });
@@ -178,6 +177,14 @@ describe("wordWrap", () => {
     const testStr = "Hello   this is a   test"; // 3 spaces
     const expected = ["Hello", "this is a", "test"];
     const maxWidth = 10;
+    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+
+    expect(wrapped).toEqual(expected);
+  });
+  it("If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)", () => {
+    const testStr = "Hi👋😀 this string 🧵 has emojis 😎!";
+    const expected = ["Hi👋", "😀", "this", "strin", "g 🧵", "has", "emoj", "is", "😎!"];
+    const maxWidth = 4;
     const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
 
     expect(wrapped).toEqual(expected);

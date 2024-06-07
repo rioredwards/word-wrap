@@ -1,104 +1,101 @@
-export function wrapWords(str: string, maxWidth: number, maxHeight: number): string[] | string {
-  // Check if string doesn't need to be wrapped
-  if (str.length <= maxWidth && !str.includes("\n")) return str;
+import GraphemeSplitter from "grapheme-splitter";
 
-  str = str.trim();
-  let char: string = "";
-  let word: string = "";
-  let line: string = "";
-  const lines: string[] = [];
+function addWordToLine(word: string[], line: string[]): void {
+  if (line.length > 0) line.push(" ", ...word);
+  else line.push(...word);
+}
+
+function addLineToLines(line: string[], lines: string[]): void {
+  lines.push(line.join(""));
+}
+
+function getSpaceLeftInLine(line: string[], maxWidth: number): number {
+  return maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
+}
+
+function lineHasSpaceForWord(word: string[], spaceLeftInLine: number): boolean {
+  return spaceLeftInLine - word.length >= 0;
+}
+
+export function wrapWords(string: string, maxWidth: number, maxHeight: number): string[] | string {
+  // Check if string doesn't need to be wrapped
+  if (string.length <= maxWidth && !string.includes("\n")) return string;
+
+  const splitter = new GraphemeSplitter();
+
+  // Emojis (🙂) and other special characters (é) are made up of multiple "code points" and graphemes address this. Graphemes are individual unicode characters (letters, etc...), grouped in a way that accounts for Emojis and other multi-code point characters. See:https://github.com/orling/grapheme-splitter
+  // Basically, as long as chars are grouped by grapheme, we can get accurate lengths for strings and won't break emojis 👍
+  const graphemes: string[] = splitter.splitGraphemes(string.trim());
+  let grapheme: string = ""; // one char, but may have length > 1 (see above ^)
+  let word: string[] = []; // grouped by grapheme
+  let line: string[] = []; // grouped by grapheme
+  const lines: string[] = []; // graphemes are joined to strings
   let spaceLeftInLine: number;
 
   // Primary loop for wrapping words
-  for (let i = 0; i < str.length; i++) {
-    char = str[i];
+  for (let i = 0; i <= graphemes.length; i++) {
+    grapheme = graphemes[i];
+    spaceLeftInLine = getSpaceLeftInLine(line, maxWidth);
 
-    // line is already full - push existing line
-    spaceLeftInLine = maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
-    if (spaceLeftInLine <= 0) {
-      lines.push(line.trim());
-      if (lines.length >= maxHeight) return lines;
-      line = "";
-      word = "";
-      spaceLeftInLine = maxWidth;
-    }
-
-    if (char === " ") {
-      // char is a space
-      // Check if word can be added to line (account for space between words)
-      if (spaceLeftInLine - word.length >= 0) {
-        // Line has room for word
-        // Add space if line already has content, then add word
-        line += (line.length > 0 ? " " : "") + word;
+    if (grapheme === " " || grapheme === undefined) {
+      // grapheme is a space or we reached the end of the string
+      if (lineHasSpaceForWord(word, spaceLeftInLine)) {
+        addWordToLine(word, line);
       } else {
-        // Line doesn't have room for word
-        // Current line can be added to lines array
-        lines.push(line.trim());
+        // Line doesn't have space for word
+        // Current line can be added to lines array & new line started with word
+        addLineToLines(line, lines);
         if (lines.length >= maxHeight) return lines;
-        // Start new line with word
-        line = word;
+        line = [...word];
       }
-      word = "";
-    } else if (char === "\n") {
-      if (spaceLeftInLine - word.length >= 0) {
-        // Line has room for word
-        // Add space if line already has content, then add word
-        line += (line.length > 0 ? " " : "") + word;
+      if (grapheme === undefined) {
+        // On last loop
+        addLineToLines(line, lines);
+        break;
+      }
+      word = [];
+    } else if (grapheme === "\n") {
+      if (lineHasSpaceForWord(word, spaceLeftInLine)) {
+        addWordToLine(word, line);
       } else {
-        // Line doesn't have room for word
-        lines.push(line.trim());
+        // Line doesn't have space for word
+        addLineToLines(line, lines);
         if (lines.length >= maxHeight) return lines;
-        line = word;
+        line = [...word];
       }
-      // split the line
-      word = "";
-      lines.push(line.trim());
+      // split the line & ignore the newline
+      addLineToLines(line, lines);
       if (lines.length >= maxHeight) return lines;
-      // ignore the newline
-      line = "";
-    } else if (char === "\r") {
+      word = [];
+      line = [];
+    } else if (grapheme === "\r") {
       // Do nothing. These are ignored completely
     } else {
-      // char is a regular character
+      // grapheme is a regular character
       if (word.length < maxWidth) {
-        // if word length isn't maxWidth
-        // add it to word
-        word += char;
+        word.push(grapheme);
       } else {
-        // split word into existing line
-        // and add rest to next line
-        const splitWordStart = word.substring(0, spaceLeftInLine);
-        const splitWordEnd = word.substring(spaceLeftInLine);
-        line += (line.length > 0 ? " " : "") + splitWordStart;
+        // word is longer than maxWidth:
+        // so split word into existing line & add rest to next line
+        const splitWordEnd = word.splice(spaceLeftInLine);
+        addWordToLine(word, line);
+        addLineToLines(line, lines);
         if (lines.length >= maxHeight) return lines;
-        lines.push(line.trim());
         // insert the end of the splitWord to next line
-        line = splitWordEnd;
-        word = char;
+        line = [...splitWordEnd];
+        word = [grapheme];
       }
     }
-  }
 
-  if (lines.length >= maxHeight) return lines;
-
-  // Account for last word
-  if (word.length > 0) {
-    spaceLeftInLine = maxWidth - line.length - (line.length && 1);
-    if (spaceLeftInLine - word.length >= 0) {
-      // Line has room for word
-      // Add space if line already has content, then add word
-      line += (line.length > 0 ? " " : "") + word;
-    } else {
+    spaceLeftInLine = getSpaceLeftInLine(line, maxWidth);
+    if (spaceLeftInLine <= 0) {
+      addLineToLines(line, lines);
       if (lines.length >= maxHeight) return lines;
-      lines.push(line.trim());
-      line = word;
+      line = [];
+      word = [];
+      spaceLeftInLine = maxWidth;
     }
   }
-
-  // Account for last line
-  if (line.length) {
-    lines.push(line.trim());
-  }
-
+  console.log("🐙 Exited Late");
   return lines;
 }
