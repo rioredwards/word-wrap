@@ -47,8 +47,13 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
 
     if (grapheme === " ") {
       if (word.length > 0) nextWhiteSpaceCount++;
+      else if (line.length > 0) currWhiteSpaceCount++;
       if (word.length > 0) addWordFlag = true;
-    } else if (grapheme === "\n" || grapheme === undefined) {
+    } else if (grapheme === "\n") {
+      addWordFlag = true;
+      addLineFlag = true;
+    } else if (grapheme === undefined) {
+      addWordFlag = true;
       if (word.length > 1) {
         addWordFlag = true;
         addLineFlag = true;
@@ -96,30 +101,3 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
 
   return lines;
 }
-
-// if (lineHasSpaceForWord(word, numWhiteSpacesToInsert, spaceLeftInLine)) {
-//   addWordToLine(word, numWhiteSpacesToInsert, line);
-//   numWhiteSpacesToInsert = 0;
-// } else {
-//   // Line doesn't have space for word
-//   // Current line can be added to lines array & new line started with word
-//   addLineToLines(line, lines);
-//   numWhiteSpacesToInsert = 0;
-//   addWordToLine(word, numWhiteSpacesToInsert, line);
-// }
-
-// if (word.length >= maxWidth) {
-//   addWordFlag = true;
-// }
-
-// if (word.length >= maxWidth) {
-//   // word is maxWidth:
-//   // so just create full line out of it
-//   addWordToLine(word, numWhiteSpacesToInsertBeforeNextWord, line);
-//   numWhiteSpacesToInsertBeforeNextWord = 0;
-//   addLineToLines(line, lines);
-//   // insert the end of the splitWord to next line
-//   if (splitWordEnd.length > 1)
-//     addWordToLine(splitWordEnd, numWhiteSpacesToInsertBeforeNextWord, line);
-//   word = [grapheme];
-// }
