@@ -1,16 +1,25 @@
 import GraphemeSplitter from "grapheme-splitter";
 
-function addWordToLine(word: string[], line: string[]): void {
-  if (line.length > 0) line.push(" ", ...word);
+function addWordToLine(word: string[], numWhiteSpacesToInsert: number, line: string[]): void {
+  const whiteSpace = " ".repeat(numWhiteSpacesToInsert);
+  if (whiteSpace) line.push(whiteSpace, ...word);
   else line.push(...word);
+  // Clear word
+  word.length = 0;
 }
 
 function addLineToLines(line: string[], lines: string[]): void {
   lines.push(line.join(""));
+  // Clear line array (passed by reference, so can't just reassign to [])
+  line.length = 0;
 }
 
-function getSpaceLeftInLine(line: string[], maxWidth: number): number {
-  return maxWidth - line.length - (line.length && line.length !== maxWidth ? 1 : 0);
+function getSpaceLeftInLine(
+  line: string[],
+  numWhiteSpacesToInsert: number,
+  maxWidth: number
+): number {
+  return maxWidth - line.length - numWhiteSpacesToInsert;
 }
 
 function lineHasSpaceForWord(word: string[], spaceLeftInLine: number): boolean {
@@ -30,41 +39,35 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
   let word: string[] = []; // grouped by grapheme
   let line: string[] = []; // grouped by grapheme
   const lines: string[] = []; // graphemes are joined to strings
-  let spaceLeftInLine: number;
+  let spaceLeftInLine: number = maxWidth;
+  let numWhiteSpacesToInsert: number = 0;
 
   // Primary loop for wrapping words
   for (let i = 0; i <= graphemes.length; i++) {
     grapheme = graphemes[i];
-    spaceLeftInLine = getSpaceLeftInLine(line, maxWidth);
+    spaceLeftInLine = getSpaceLeftInLine(line, numWhiteSpacesToInsert, maxWidth);
 
-    if (grapheme === " " || grapheme === undefined) {
-      // grapheme is a space or we reached the end of the string
+    if (grapheme === " " || grapheme === "\n" || grapheme === undefined) {
+      // grapheme is: space, newline, or we reached the end of the string
+      if (line.length > 0) numWhiteSpacesToInsert++;
+      if (word.length === 0) continue;
       if (lineHasSpaceForWord(word, spaceLeftInLine)) {
-        addWordToLine(word, line);
+        // Need to include white space
+        addWordToLine(word, numWhiteSpacesToInsert, line);
+        numWhiteSpacesToInsert = 0;
       } else {
         // Line doesn't have space for word
         // Current line can be added to lines array & new line started with word
         addLineToLines(line, lines);
-        line = [...word];
+        numWhiteSpacesToInsert = 0;
+        addWordToLine(word, numWhiteSpacesToInsert, line);
       }
+      if (grapheme === "\n") addLineToLines(line, lines);
       if (grapheme === undefined) {
         // On last loop
         addLineToLines(line, lines);
         break;
       }
-      word = [];
-    } else if (grapheme === "\n") {
-      if (lineHasSpaceForWord(word, spaceLeftInLine)) {
-        addWordToLine(word, line);
-      } else {
-        // Line doesn't have space for word
-        addLineToLines(line, lines);
-        line = [...word];
-      }
-      // split the line & ignore the newline
-      addLineToLines(line, lines);
-      word = [];
-      line = [];
     } else if (grapheme === "\r") {
       // Do nothing. These are ignored completely
     } else {
@@ -75,19 +78,21 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
         // word is longer than maxWidth:
         // so split word into existing line & add rest to next line
         const splitWordEnd = word.splice(spaceLeftInLine);
-        addWordToLine(word, line);
+        //  if (splitWordEnd.length > 1) throw new Error("🐽🐽🐽🐽 splitWordEnd.length > 1 🐽🐽🐽🐽");
+        addWordToLine(word, numWhiteSpacesToInsert, line);
+        numWhiteSpacesToInsert = 0;
         addLineToLines(line, lines);
         // insert the end of the splitWord to next line
-        line = [...splitWordEnd];
+        if (splitWordEnd.length > 1) addWordToLine(splitWordEnd, numWhiteSpacesToInsert, line);
         word = [grapheme];
       }
     }
 
-    spaceLeftInLine = getSpaceLeftInLine(line, maxWidth);
+    spaceLeftInLine = getSpaceLeftInLine(line, numWhiteSpacesToInsert, maxWidth);
+    // TODO Test this out
+    // if (spaceLeftInLine - word.length <= 0) {
     if (spaceLeftInLine <= 0) {
       addLineToLines(line, lines);
-      line = [];
-      word = [];
       spaceLeftInLine = maxWidth;
     }
     if (lines.length >= maxHeight) break;
