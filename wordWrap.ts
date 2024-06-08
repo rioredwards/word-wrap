@@ -1,29 +1,25 @@
 import GraphemeSplitter from "grapheme-splitter";
 
-function addWordToLine(word: string[], numWhiteSpacesToInsert: number, line: string[]): void {
-  const whiteSpace = " ".repeat(numWhiteSpacesToInsert);
-  if (whiteSpace) line.push(whiteSpace, ...word);
-  else line.push(...word);
-  // Clear word
+function addWordToLine(word: string[], whiteSpaceCount: number, line: string[]): void {
+  if (whiteSpaceCount > 0) {
+    const whiteSpace = " ".repeat(whiteSpaceCount);
+    line.push(whiteSpace, ...word);
+  } else line.push(...word);
   word.length = 0;
 }
 
 function addLineToLines(line: string[], lines: string[]): void {
   lines.push(line.join(""));
-  // Clear line array (passed by reference, so can't just reassign to [])
   line.length = 0;
 }
 
-function getSpaceLeftInLine(
+function isSpaceForWordInLine(
   line: string[],
-  numWhiteSpacesToInsert: number,
+  whiteSpaceCount: number,
+  word: string[],
   maxWidth: number
-): number {
-  return maxWidth - line.length - numWhiteSpacesToInsert;
-}
-
-function lineHasSpaceForWord(word: string[], spaceLeftInLine: number): boolean {
-  return spaceLeftInLine - word.length >= 0;
+): boolean {
+  return maxWidth - line.length - whiteSpaceCount - word.length >= 0;
 }
 
 export function wrapWords(string: string, maxWidth: number, maxHeight: number): string[] | string {
@@ -39,62 +35,59 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
   let word: string[] = []; // grouped by grapheme
   let line: string[] = []; // grouped by grapheme
   const lines: string[] = []; // graphemes are joined to strings
-  let spaceLeftInLine: number = maxWidth;
-  let numWhiteSpacesToInsert: number = 0;
+  let currWhiteSpaceCount: number = 0;
+  let nextWhiteSpaceCount: number = 0;
+  let addGraphemeFlag: boolean = false;
+  let addWordFlag: boolean = false;
+  let addLineFlag: boolean = false;
 
   // Primary loop for wrapping words
   for (let i = 0; i <= graphemes.length; i++) {
     grapheme = graphemes[i];
-    spaceLeftInLine = getSpaceLeftInLine(line, numWhiteSpacesToInsert, maxWidth);
 
-    if (grapheme === " " || grapheme === "\n" || grapheme === undefined) {
-      // grapheme is: space, newline, or we reached the end of the string
-      if (line.length > 0) numWhiteSpacesToInsert++;
-      if (word.length === 0) continue;
-      if (lineHasSpaceForWord(word, spaceLeftInLine)) {
-        // Need to include white space
-        addWordToLine(word, numWhiteSpacesToInsert, line);
-        numWhiteSpacesToInsert = 0;
-      } else {
-        // Line doesn't have space for word
-        // Current line can be added to lines array & new line started with word
-        addLineToLines(line, lines);
-        numWhiteSpacesToInsert = 0;
-        addWordToLine(word, numWhiteSpacesToInsert, line);
-      }
-      if (grapheme === "\n") addLineToLines(line, lines);
-      if (grapheme === undefined) {
-        // On last loop
-        addLineToLines(line, lines);
-        break;
+    if (grapheme === " ") {
+      if (word.length > 0) nextWhiteSpaceCount++;
+      if (word.length > 0) addWordFlag = true;
+    } else if (grapheme === "\n" || grapheme === undefined) {
+      if (word.length > 1) {
+        addWordFlag = true;
+        addLineFlag = true;
       }
     } else if (grapheme === "\r") {
       // Do nothing. These are ignored completely
     } else {
       // grapheme is a regular character
-      if (word.length < maxWidth) {
-        word.push(grapheme);
-      } else {
-        // word is longer than maxWidth:
-        // so split word into existing line & add rest to next line
-        const splitWordEnd = word.splice(spaceLeftInLine);
-        //  if (splitWordEnd.length > 1) throw new Error("🐽🐽🐽🐽 splitWordEnd.length > 1 🐽🐽🐽🐽");
-        addWordToLine(word, numWhiteSpacesToInsert, line);
-        numWhiteSpacesToInsert = 0;
-        addLineToLines(line, lines);
-        // insert the end of the splitWord to next line
-        if (splitWordEnd.length > 1) addWordToLine(splitWordEnd, numWhiteSpacesToInsert, line);
-        word = [grapheme];
-      }
+      addGraphemeFlag = true;
     }
 
-    spaceLeftInLine = getSpaceLeftInLine(line, numWhiteSpacesToInsert, maxWidth);
-    // TODO Test this out
-    // if (spaceLeftInLine - word.length <= 0) {
-    if (spaceLeftInLine <= 0) {
-      addLineToLines(line, lines);
-      spaceLeftInLine = maxWidth;
+    if (addGraphemeFlag) {
+      word.push(grapheme);
+      addGraphemeFlag = false;
     }
+
+    if (word.length >= maxWidth) {
+      addWordFlag = true;
+      addLineFlag = true;
+    }
+
+    if (addWordFlag) {
+      addWordToLine(word, currWhiteSpaceCount, line);
+      currWhiteSpaceCount = nextWhiteSpaceCount;
+      nextWhiteSpaceCount = 0;
+      addWordFlag = false;
+    }
+
+    if (!isSpaceForWordInLine(line, currWhiteSpaceCount, word, maxWidth)) {
+      addLineFlag = true;
+    }
+
+    if (addLineFlag) {
+      addLineToLines(line, lines);
+      currWhiteSpaceCount = 0;
+      nextWhiteSpaceCount = 0;
+      addLineFlag = false;
+    }
+
     if (lines.length >= maxHeight) break;
   }
 
@@ -103,3 +96,30 @@ export function wrapWords(string: string, maxWidth: number, maxHeight: number): 
 
   return lines;
 }
+
+// if (lineHasSpaceForWord(word, numWhiteSpacesToInsert, spaceLeftInLine)) {
+//   addWordToLine(word, numWhiteSpacesToInsert, line);
+//   numWhiteSpacesToInsert = 0;
+// } else {
+//   // Line doesn't have space for word
+//   // Current line can be added to lines array & new line started with word
+//   addLineToLines(line, lines);
+//   numWhiteSpacesToInsert = 0;
+//   addWordToLine(word, numWhiteSpacesToInsert, line);
+// }
+
+// if (word.length >= maxWidth) {
+//   addWordFlag = true;
+// }
+
+// if (word.length >= maxWidth) {
+//   // word is maxWidth:
+//   // so just create full line out of it
+//   addWordToLine(word, numWhiteSpacesToInsertBeforeNextWord, line);
+//   numWhiteSpacesToInsertBeforeNextWord = 0;
+//   addLineToLines(line, lines);
+//   // insert the end of the splitWord to next line
+//   if (splitWordEnd.length > 1)
+//     addWordToLine(splitWordEnd, numWhiteSpacesToInsertBeforeNextWord, line);
+//   word = [grapheme];
+// }
