@@ -12,9 +12,9 @@ import { wrapWords } from "./wordWrap";
 // ✅ If a string contains consecutive newline characters \n, it should treat the first one as stated above ^ and the following newlines become rows with empty strings: ""
 // ✅ If a string contains carriage returns \r, they should be ignored
 // ✅ If a string contains consecutive spaces, they should be preserved only if they appear between words on a line. If they should start or end a line, then discard them
-// - If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)
-// - If a string contains emojis, then count the length of each emoji as 2 (this is the default rendered width on my terminal, but could be parametrized)
-// - If a string contains emojis, a single emoji's unicode should not be broken by wrapping (many Emoji's are made up of multiple groups of unicode)
+// ✅ If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)
+// ✅ If a string contains emojis, then count the length of each emoji as 2 (this is the default rendered width on my terminal, but could be parametrized)
+// ✅ If a string contains emojis, a single emoji's unicode should not be broken by wrapping (many Emoji's are made up of multiple groups of unicode)
 
 // Edge cases:
 // - str should be a string
@@ -183,7 +183,7 @@ describe("wordWrap", () => {
   });
   it("If a string contains emojis, then count each emoji as a single word (consecutive emojis can be broken up as if individual words)", () => {
     const testStr = "Hi👋😀 this string 🧵 has emojis 😎!";
-    const expected = ["Hi👋", "😀", "this", "strin", "g 🧵", "has", "emoj", "is", "😎!"];
+    const expected = ["Hi👋", "😀", "this", "stri", "ng", "🧵", "has", "emoj", "is", "😎!"];
     const maxWidth = 4;
     const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
 
