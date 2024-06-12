@@ -2,5 +2,6 @@
 
 import defaultStrategies from "./defaultStrategies";
 import spaceStrategies from "./spaceStrategies";
+import finalStrategies from "./finalStrategies";
 
-export { defaultStrategies, spaceStrategies };
+export { defaultStrategies, spaceStrategies, finalStrategies };
