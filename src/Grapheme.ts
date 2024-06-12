@@ -1,8 +1,8 @@
 import {
   GraphemeStrategy,
   graphemeLengthMap,
-  graphemeStrategyMap,
-} from "./strategies/GraphemeStrategies";
+  graphemeTypeToStrategyMap,
+} from "./strategies/graphemeTypeMaps";
 
 export type GraphemeType = "default" | "space" | "newLine" | "ignore" | "tab" | "emoji" | "empty";
 
@@ -39,7 +39,7 @@ export class Grapheme {
   constructor(val: string) {
     this.val = val;
     this.type = classifyGrapheme(val);
-    this.strategy = graphemeStrategyMap[this.type];
+    this.strategy = graphemeTypeToStrategyMap[this.type];
     this.length = graphemeLengthMap[this.type];
   }
 }

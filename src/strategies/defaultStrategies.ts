@@ -3,52 +3,21 @@
 import { Grapheme } from "../Grapheme";
 import { Line } from "../Line";
 import { Word } from "../Word";
-import { GraphemeStrategy } from "./GraphemeStrategies";
+import { GraphemeStrategy } from "./graphemeTypeMaps";
 
-// ✅ VALID 1
-const state1 = { wordExists: true, lineExists: true, canFitChar: true, canFitWord: true };
+// Implemented using "Table-Driven-Development"
+// Basically, the key for each strategy represents a configuration of the state variables
 
-const defaultStrategy1: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addGrapheme: GraphemeStrategy = (grapheme: Grapheme, word: Word) => {
   word.push(grapheme);
 };
 
-// ✅ VALID 2
-const state2 = { wordExists: false, lineExists: true, canFitChar: true, canFitWord: true };
-
-const defaultStrategy2: GraphemeStrategy = defaultStrategy1;
-
-// ✅ VALID 3
-const state3 = { wordExists: true, lineExists: false, canFitChar: true, canFitWord: true };
-
-const defaultStrategy3: GraphemeStrategy = defaultStrategy1;
-
-// ✅ VALID 4 - Starting state
-const state4 = { wordExists: false, lineExists: false, canFitChar: true, canFitWord: true };
-
-const defaultStrategy4: GraphemeStrategy = defaultStrategy1;
-
-// ✅ VALID 5
-const state5 = { wordExists: true, lineExists: false, canFitChar: false, canFitWord: true };
-
-const defaultStrategy5: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const fitWord: GraphemeStrategy = (grapheme: Grapheme, word: Word, line: Line) => {
   line.push(word.copy().graphemes);
   word.set(grapheme);
 };
 
-// ✅ VALID 6
-const state6 = { wordExists: true, lineExists: true, canFitChar: true, canFitWord: false };
-
-const defaultStrategy6: GraphemeStrategy = (
+const cantFitWord: GraphemeStrategy = (
   grapheme: Grapheme,
   word: Word,
   line: Line,
@@ -59,10 +28,7 @@ const defaultStrategy6: GraphemeStrategy = (
   word.push(grapheme);
 };
 
-// ✅ VALID 7 - word and line are both full
-const state7 = { wordExists: true, lineExists: true, canFitChar: false, canFitWord: false };
-
-const defaultStrategy7: GraphemeStrategy = (
+const wordAndLineFull: GraphemeStrategy = (
   grapheme: Grapheme,
   word: Word,
   line: Line,
@@ -72,3 +38,24 @@ const defaultStrategy7: GraphemeStrategy = (
   line.set(word.copy().graphemes);
   word.set(grapheme);
 };
+
+// TABLE REFERENCE
+// wordExists | lineExists | canFitChar | canFitWord
+const strategies: Record<string, GraphemeStrategy> = {
+  // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
+  true_true_true_true: addGrapheme,
+  // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
+  false_true_true_true: addGrapheme,
+  // State 3: wordExists: ✅ | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
+  true_false_true_true: addGrapheme,
+  // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
+  false_false_true_true: addGrapheme,
+  // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
+  true_false_false_true: fitWord,
+  // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
+  true_true_true_false: cantFitWord,
+  // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
+  true_true_false_false: wordAndLineFull,
+};
+
+export default strategies;
