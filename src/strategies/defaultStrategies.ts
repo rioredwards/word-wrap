@@ -1,6 +1,9 @@
 // Strategies for regular characters
 
-import { Grapheme, GraphemeStrategy, Line, Word } from "./wordWrap2";
+import { Grapheme } from "../Grapheme";
+import { Line } from "../Line";
+import { Word } from "../Word";
+import { GraphemeStrategy } from "./GraphemeStrategies";
 
 // ✅ VALID 1
 const state1 = { wordExists: true, lineExists: true, canFitChar: true, canFitWord: true };

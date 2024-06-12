@@ -1,4 +1,4 @@
-import { wrapWords } from "./wordWrap";
+import { wrapWords } from "../temp/wordWrap";
 
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength

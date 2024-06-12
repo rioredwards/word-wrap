@@ -1,12 +1,12 @@
 {
   "name": "word-wrap",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "jest",
     "test:w": "npm run test -- --watch",
-    "start": "ts-node index.ts",
-    "start:w": "nodemon -q --exec ts-node index.ts"
+    "start": "ts-node src/index.ts",
+    "start:w": "nodemon -q --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
