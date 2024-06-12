@@ -8,7 +8,7 @@ export type GraphemeType = "default" | "space" | "newLine" | "ignore" | "tab" | 
 
 const EMOJI_REGEX = /\p{Emoji_Presentation}/u;
 
-export const classifyGrapheme = (val: string): GraphemeType => {
+const classifyGrapheme = (val: string): GraphemeType => {
   switch (true) {
     case val === undefined:
       return "empty";

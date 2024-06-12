@@ -1,5 +1,6 @@
 // Barrel for strategies
 
-import defaultStrategy from "./defaultStrategies";
+import defaultStrategies from "./defaultStrategies";
+import spaceStrategies from "./spaceStrategies";
 
-export { defaultStrategy };
+export { defaultStrategies, spaceStrategies };

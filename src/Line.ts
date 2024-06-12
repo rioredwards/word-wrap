@@ -1,25 +1,41 @@
-import { Grapheme } from "./Grapheme";
-import { GraphemeCluster } from "./GraphemeCluster";
-
 /** Represents a series of Words or Spaces */
-export class Line extends GraphemeCluster<Line> {
+
+import { Word } from "./Word";
+
+export class Line {
+  words: Word[];
   maxWidth: number;
 
-  constructor(graphemes: Grapheme[] = [], maxWidth: number) {
-    super(graphemes);
+  constructor(words: Word[] = [], maxWidth: number = Infinity) {
+    this.words = words;
     this.maxWidth = maxWidth;
   }
 
-  set(graphemes: Grapheme[]): void {
-    this.graphemes = [...graphemes];
+  get length(): number {
+    return this.words.reduce((acc, word) => acc + word.length, 0);
   }
 
-  push(graphemes: Grapheme[]) {
-    this.graphemes.push(...graphemes);
+  set(word: Word): void {
+    this.words = [word];
+  }
+
+  push(word: Word): void {
+    this.words.push(word);
   }
 
   copy(): Line {
-    const newGraphemes = this.graphemes.map((grapheme) => new Grapheme(grapheme.val));
-    return new Line(newGraphemes, this.maxWidth);
+    const newWords = this.words.map((word) => word.copy());
+    return new Line(newWords, this.maxWidth);
+  }
+
+  clear(): void {
+    this.words = [];
+  }
+
+  appendSpacesRight(numSpaces: number): void {
+    const lastWord = this.words.at(-1);
+    if (lastWord !== undefined) {
+      lastWord.appendSpacesRight(numSpaces);
+    }
   }
 }
