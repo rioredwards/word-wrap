@@ -11,41 +11,40 @@ interface CaseMatrix {
   lineExists: LineExists;
   canFitChar: CanFit;
   canFitWord: CanFit;
-  canFitLine: CanFit;
 }
 
-// First iteration: everything is empty
+/* 🚫 INVALID */
 const case1: CaseMatrix = {
   wordExists: false,
   lineExists: false,
-  canFitChar: true,
-  canFitWord: true,
-  canFitLine: true,
-};
-
-// Word exists, all fit
-const case2: CaseMatrix = {
-  wordExists: true,
-  lineExists: false,
-  canFitChar: true,
-  canFitWord: true,
-  canFitLine: true,
-};
-
-// Word exists, can't fit char and line doesn't exist (long word with no line)
-const case3: CaseMatrix = {
-  wordExists: true,
-  lineExists: false,
   canFitChar: false,
-  canFitWord: true,
-  canFitLine: true,
+  canFitWord: false,
 };
 
-// Both exist, all fit
-const caseTEMP: CaseMatrix = {
-  wordExists: true,
-  lineExists: true,
-  canFitChar: true,
-  canFitWord: true,
-  canFitLine: true,
-};
+const states = [true, false];
+
+const allStates: CaseMatrix[] = [];
+
+for (const state1 of states) {
+  for (const state2 of states) {
+    for (const state3 of states) {
+      for (const state4 of states) {
+        const state: CaseMatrix = {
+          wordExists: state4,
+          lineExists: state3,
+          canFitChar: state2,
+          canFitWord: state1,
+        };
+        allStates.push(state);
+      }
+    }
+  }
+}
+
+console.log(allStates);
+const stringified = allStates.map(
+  (state, idx) => `const state${idx + 1} = ${JSON.stringify(state)}`
+);
+
+const string = stringified.join("\n");
+console.log(string);

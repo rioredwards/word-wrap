@@ -1,15 +1,5 @@
 import GraphemeSplitter from "grapheme-splitter";
 
-interface HasLength {
-  length: number;
-}
-
-interface HasVal<T extends string | string[]> {
-  val: T;
-}
-
-interface HasValAndLength<T extends string | string[]> extends HasVal<T>, HasLength {}
-
 function appendWordToLine(word: string[], whiteSpaceCount: number, line: string[]): void {
   if (whiteSpaceCount > 0) {
     const whiteSpace = " ".repeat(whiteSpaceCount);
@@ -47,7 +37,7 @@ export default function (string: string, options: Options): string[] | string {
 }
 
 /** Represents a single text character */
-class Grapheme implements HasValAndLength<string> {
+export class Grapheme {
   strategy: GraphemeStrategy;
   val: string;
   type: GraphemeType;
@@ -64,88 +54,7 @@ class Grapheme implements HasValAndLength<string> {
 }
 
 /** Contract that each grapheme strategy must implement */
-type GraphemeStrategy = (grapheme: Grapheme, word: Word, line: Line, lines: Line[]) => void;
-
-const defaultStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  word.push(grapheme);
-};
-
-const spaceStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  // Things to consider:
-  // Default case: word & line exist, word can fit in line, line is under maxWidth
-  // New Both case: word doesn't exist, line doesn't exist
-  // New Word case: word doesn't exist, line exists
-  // New Line case: word exists, line doesn't exists
-  // End of line case: word & line exist, word can't fit in line, line is under maxWidth
-  // End of word, no line case: word is maxLength, line doesn't exist
-  // End of word, with line case: word is maxLength, line exists
-  // End of word case: word is maxLength, line is not
-  if (word.length > 0) {
-    // TODO Add Series of possible states (just as comments) to help visualize different cases
-    // if (canFitWordInLine(word, line)) line.push(word.copy());
-    appendWordToLine(word, currWhiteSpaceCount, line);
-    lineLength += wordLength + currWhiteSpaceCount;
-    wordLength = 0;
-    currWhiteSpaceCount = nextWhiteSpaceCount;
-    nextWhiteSpaceCount = 0;
-    addWordFlag = false;
-  } else if (line.length > 0) currWhiteSpaceCount++;
-};
-
-const newLineStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  line.push(word);
-};
-
-const emojiStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  line.push(word);
-};
-
-const tabStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  // Do Nothing
-};
-
-const ignoreStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  // Do Nothing
-};
-
-const emptyStrategy: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  // Do Nothing
-};
+export type GraphemeStrategy = (grapheme: Grapheme, word: Word, line: Line, lines: Line[]) => void;
 
 const EMOJI_REGEX = /\p{Emoji_Presentation}/u;
 
@@ -190,9 +99,12 @@ const graphemeLengthToStrategyMap: Record<GraphemeType, number> = {
   ignore: 0,
 };
 
-/** Represents a group of non-whitespace characters */
-class Word implements HasValAndLength<string> {
-  constructor(private graphemes: Grapheme[] = []) {}
+export abstract class GraphemeCluster<T extends GraphemeCluster<T>> {
+  graphemes: Grapheme[];
+
+  constructor(graphemes: Grapheme[]) {
+    this.graphemes = graphemes;
+  }
 
   get val(): string {
     if (this.graphemes.length <= 0) return "";
@@ -204,33 +116,57 @@ class Word implements HasValAndLength<string> {
     return this.graphemes.reduce((acc: number, grapheme: Grapheme) => grapheme.length + acc, 0);
   }
 
+  clear(): void {
+    this.graphemes = [];
+  }
+
+  abstract set(input: Grapheme | Grapheme[]): void;
+
+  abstract push(input: Grapheme | Grapheme[]): void;
+
+  abstract copy(): T;
+}
+
+/** Represents a group of non-whitespace characters */
+export class Word extends GraphemeCluster<Word> {
+  constructor(graphemes: Grapheme[] = []) {
+    super(graphemes);
+  }
+
+  set(grapheme: Grapheme): void {
+    this.graphemes = [grapheme];
+  }
+
   push(grapheme: Grapheme): void {
     this.graphemes.push(grapheme);
   }
 
-  copy() {
+  copy(): Word {
     const newGraphemes = this.graphemes.map((grapheme) => new Grapheme(grapheme.val));
     return new Word(newGraphemes);
   }
 }
 
 /** Represents a series of Words or Spaces */
-class Line implements HasValAndLength<string> {
-  constructor(public readonly maxWidth: number, private content: HasValAndLength<string>[] = []) {}
+export class Line extends GraphemeCluster<Line> {
+  maxWidth: number;
 
-  get val(): string {
-    if (this.content.length <= 0) return "";
-    const contentVals = this.content.map((item: HasVal<string>) => item.val);
-    return contentVals.join("");
+  constructor(graphemes: Grapheme[] = [], maxWidth: number) {
+    super(graphemes);
+    this.maxWidth = maxWidth;
   }
 
-  get length() {
-    if (this.content.length <= 0) return 0;
-    return this.content.reduce((acc: number, item: HasLength) => acc + item.length, 0);
+  set(graphemes: Grapheme[]): void {
+    this.graphemes = [...graphemes];
   }
 
-  push(word: Word) {
-    this.content.push(word);
+  push(graphemes: Grapheme[]) {
+    this.graphemes.push(...graphemes);
+  }
+
+  copy(): Line {
+    const newGraphemes = this.graphemes.map((grapheme) => new Grapheme(grapheme.val));
+    return new Line(newGraphemes, this.maxWidth);
   }
 }
 
