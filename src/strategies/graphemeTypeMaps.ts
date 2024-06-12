@@ -3,7 +3,13 @@
 import { Grapheme, GraphemeType } from "../Grapheme";
 import { Word } from "../Word";
 import { Line } from "../Line";
-import { defaultStrategies, finalStrategies, newlineStrategies, spaceStrategies } from ".";
+import {
+  defaultStrategies,
+  finalStrategies,
+  newlineStrategies,
+  spaceStrategies,
+  tabStrategies,
+} from ".";
 
 /** Contract that each grapheme strategy must implement */
 export type GraphemeStrategy = (grapheme: Grapheme, word: Word, line: Line, lines: Line[]) => void;
@@ -14,9 +20,9 @@ export const graphemeTypeToStrategyMap: Record<GraphemeType, GraphemeStateToStra
   space: spaceStrategies,
   final: finalStrategies,
   newLine: newlineStrategies,
-  // tab: tabStrategy,
-  // emoji: emojiStrategy,
-  // ignore: ignoreStrategy,
+  tab: tabStrategies,
+  // emoji: emojiStrategies,
+  // ignore: ignoreStrategies,
 };
 
 export const graphemeLengthMap: Record<GraphemeType, number> = {
