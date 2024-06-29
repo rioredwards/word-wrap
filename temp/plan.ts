@@ -1,16 +1,12 @@
 // Things to consider
 
-type WordExists = boolean;
-type LineExists = boolean;
-type CanFit = boolean;
-
 // This describes all possible states to consider when adding a new char
 // Each char should consider every possibility, and address each one explicitly
 interface CaseMatrix {
-  wordExists: WordExists;
-  lineExists: LineExists;
-  canFitChar: CanFit;
-  canFitWord: CanFit;
+  wordExists: boolean;
+  lineExists: boolean;
+  canFitChar: boolean;
+  canFitWord: boolean;
 }
 
 /* 🚫 INVALID */

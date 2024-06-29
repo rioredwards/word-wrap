@@ -22,7 +22,8 @@ export class WordWrapper {
     this.maxWidth = this.sanitizeNumber(options.maxWidth);
     this.maxHeight = this.sanitizeNumber(options.maxHeight);
 
-    // Emojis (🙂) and other special characters (é) are made up of multiple "code points" and graphemes address this. Graphemes are individual unicode characters (letters, etc...), grouped in a way that accounts for Emojis and other multi-code point characters. See:https://github.com/orling/grapheme-splitter
+    // Emojis (🙂) and other special characters (é) are made up of multiple "code points" which result in inconsistent/misleading length measurements.
+    // Graphemes address this. Graphemes are individual unicode characters (letters, etc...), grouped in a way that accounts for Emojis and other multi-code point characters. See:https://github.com/orling/grapheme-splitter
     // Basically, as long as chars are grouped by grapheme, we can get accurate lengths for strings and won't break emojis 👍
     const graphemeStrings = this.splitByGraphemes(sanitizedString);
     this.graphemes = graphemeStrings.map((str) => new Grapheme(str));
