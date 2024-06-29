@@ -1,26 +1,26 @@
 // The main class which does all of the word-wrapping
 
 import GraphemeSplitter from "grapheme-splitter";
-import { Options } from ".";
 import { Grapheme } from "./Grapheme";
 import { Word } from "./Word";
 import { Line } from "./Line";
+import { classifyState } from "./ClassifyState";
 
 export class WordWrapper {
   // Inputs
-  readonly maxWidth: number;
+  readonly maxLength: number;
   readonly maxHeight: number;
 
   // Derived state
   readonly graphemes: Grapheme[];
 
-  constructor(string: string, options: Options) {
+  constructor(string: string, maxLength: number, maxHeight: number) {
     // Validate input
-    this.validateInput(string, options);
+    this.validateInput(string, maxLength, maxHeight);
     // Sanitize input
     const sanitizedString = this.sanitizeString(string);
-    this.maxWidth = this.sanitizeNumber(options.maxWidth);
-    this.maxHeight = this.sanitizeNumber(options.maxHeight);
+    this.maxLength = this.sanitizeNumber(maxLength);
+    this.maxHeight = this.sanitizeNumber(maxHeight);
 
     // Emojis (🙂) and other special characters (é) are made up of multiple "code points" which result in inconsistent/misleading length measurements.
     // Graphemes address this. Graphemes are individual unicode characters (letters, etc...), grouped in a way that accounts for Emojis and other multi-code point characters. See:https://github.com/orling/grapheme-splitter
@@ -29,13 +29,13 @@ export class WordWrapper {
     this.graphemes = graphemeStrings.map((str) => new Grapheme(str));
   }
 
-  /** Ensures input string is a string, and maxWidth and maxHeight are numbers greater than 1 */
-  validateInput(string: string, options: Options): void {
+  /** Ensures input string is a string, and maxLength and maxHeight are numbers greater than 1 */
+  validateInput(string: string, maxLength: number, maxHeight: number): void {
     if (typeof string !== "string") throw new Error("wrapWords must be passed a valid string");
-    if (isNaN(options.maxWidth) || Math.round(options.maxWidth) < 1)
-      throw new Error("maxWidth must be a number greater than 1");
-    if (isNaN(options.maxHeight) || Math.round(options.maxHeight) < 1)
-      throw new Error("maxWidth must be a number greater than 1");
+    if (isNaN(maxLength) || Math.round(maxLength) < 1)
+      throw new Error("maxLength must be a number greater than 1");
+    if (isNaN(maxHeight) || Math.round(maxHeight) < 1)
+      throw new Error("maxLength must be a number greater than 1");
   }
 
   /** Trims whitespace, removes \r, and replaces \t with 4 spaces */
@@ -60,11 +60,14 @@ export class WordWrapper {
 
   wrap(): string | string[] {
     let word: Word = new Word();
-    let line: Line = new Line(this.maxWidth);
+    let line: Line = new Line([], this.maxLength);
     let lines: Line[] = [];
 
     for (const grapheme of this.graphemes) {
-      grapheme.strategy(grapheme, word, line, lines);
+      // Get state (series of true's and false's)
+      const stateStr = classifyState(grapheme, word, line, this.maxLength);
+      const strategy = grapheme.strategies[stateStr];
+      strategy(grapheme, word, line, lines);
     }
 
     return lines.map((line) => line.val);

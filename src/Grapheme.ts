@@ -1,5 +1,5 @@
 import {
-  GraphemeStrategy,
+  GraphemeStateToStrategyMap,
   graphemeLengthMap,
   graphemeTypeToStrategyMap,
 } from "./strategies/graphemeTypeMaps";
@@ -29,7 +29,7 @@ const classifyGrapheme = (val: string): GraphemeType => {
 
 /** Represents a single text character */
 export class Grapheme {
-  strategy: GraphemeStrategy;
+  strategies: GraphemeStateToStrategyMap;
   val: string;
   type: GraphemeType;
   length: number;
@@ -39,7 +39,7 @@ export class Grapheme {
   constructor(val: string) {
     this.val = val;
     this.type = classifyGrapheme(val);
-    this.strategy = graphemeTypeToStrategyMap[this.type];
+    this.strategies = graphemeTypeToStrategyMap[this.type];
     this.length = graphemeLengthMap[this.type];
   }
 }

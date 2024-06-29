@@ -5,7 +5,9 @@ import { Word } from "../Word";
 import { Line } from "../Line";
 import {
   defaultStrategies,
+  emojiStrategies,
   finalStrategies,
+  ignoreStrategies,
   newlineStrategies,
   spaceStrategies,
   tabStrategies,
@@ -21,16 +23,16 @@ export const graphemeTypeToStrategyMap: Record<GraphemeType, GraphemeStateToStra
   final: finalStrategies,
   newLine: newlineStrategies,
   tab: tabStrategies,
-  // emoji: emojiStrategies,
-  // ignore: ignoreStrategies,
+  emoji: emojiStrategies,
+  ignore: ignoreStrategies,
 };
 
 export const graphemeLengthMap: Record<GraphemeType, number> = {
   default: 1,
   space: 1,
-  empty: 0,
   newLine: 0,
   tab: 4,
   emoji: 2,
   ignore: 0,
+  final: 1, // TODO This might cause issues...
 };
