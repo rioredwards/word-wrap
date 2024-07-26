@@ -4,7 +4,7 @@ import GraphemeSplitter from "grapheme-splitter";
 import { Grapheme } from "./Grapheme";
 import { Word } from "./Word";
 import { Line } from "./Line";
-import { classifyState } from "./ClassifyState";
+import { classifyState } from "./classifyState";
 
 export class WordWrapper {
   // Inputs
