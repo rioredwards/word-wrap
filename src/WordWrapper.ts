@@ -7,6 +7,12 @@ import { Line } from "./Line";
 import { classifyState } from "./classifyState";
 import { log } from "./Logger";
 
+import readline from "node:readline/promises";
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
 export class WordWrapper {
   // Inputs
   readonly maxLength: number;
@@ -59,29 +65,25 @@ export class WordWrapper {
     return graphemes;
   }
 
-  wrap(): string | string[] {
+  async wrap(): Promise<string | string[]> {
     let word: Word = new Word();
     let line: Line = new Line([], this.maxLength);
     let lines: Line[] = [];
-    let tempPrevStateStr: any = null;
-    let tempPrevGrapheme: any = null;
 
     for (const grapheme of this.graphemes) {
       // Get state (series of true's and false's)
-      // TODO fuzz test
-      // Sentence reached over maxLength with a space at the end
-      // if (word.val === "is") debugger;
-
-      // if (tempPrevStateStr === "true_true_true_true" && tempPrevGrapheme === " ") debugger;
       const stateStr = classifyState(grapheme, word, line, this.maxLength);
-      // if ((stateStr as any) === "false_true_true_false") debugger; // Word doesn't exist, but still can't fit?
-      tempPrevStateStr = stateStr;
-      tempPrevGrapheme = grapheme.val;
       const strategy = grapheme.strategies[stateStr];
-      log(word, line, lines, stateStr, strategy);
+      log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
       strategy(grapheme, word, line, lines);
+      await getInput("Continue? (press enter)");
     }
 
     return lines.map((line) => line.val);
   }
+}
+
+async function getInput(question: string) {
+  const res = await rl.question(question);
+  return res;
 }

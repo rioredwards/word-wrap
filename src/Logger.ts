@@ -1,86 +1,46 @@
-import { State } from "./classifyState";
-import { Line } from "./Line";
-import { GraphemeStrategy } from "./strategies/graphemeTypeMaps";
 import { Word } from "./Word";
-import fs from "fs";
-import path from "path";
+import { Line } from "./Line";
+import { State } from "./classifyState";
+import { GraphemeStrategy } from "./strategies/graphemeTypeMaps";
+import { Grapheme } from "./Grapheme";
 
-if (process.env.LOGGING === "file") {
-  console.log("Logging Mode set to file");
-}
-
-const FILE_NAME = "logFile.txt";
-const DIR_PATH = path.join(__dirname, "..", FILE_NAME);
-
-type Transport = "file" | "console";
-type WriteMode = "append" | "overwrite";
-
-type LoggerConfig =
-  | {
-      transport: "console";
-    }
-  | {
-      transport: "file";
-      filePath: string;
-      writeMode: WriteMode;
-    };
-
-class Logger {
-  private str: string = "";
-  private transport: Transport;
-  private filePath?: string;
-  private writeMode?: WriteMode;
-
-  constructor(config: LoggerConfig) {
-    this.str = "---- LOG START ----\n";
-    this.transport = config.transport;
-    if (config.transport === "file") {
-      this.filePath = config.filePath;
-      this.writeMode = config.writeMode;
-    }
-  }
-
-  append(str: string) {
-    this.str += `\n${str}`;
-  }
-
-  log() {
-    switch (this.transport) {
-      case "console":
-        console.log(this.str);
-        break;
-      case "file":
-        fs.appendFileSync(this.filePath!, this.str);
-        break;
-
-      default:
-        console.warn("Invalid transport for logger");
-        break;
-    }
-  }
-}
+let graphemeCount = 0;
 
 export function log(
+  maxLength: number,
+  grapheme: Grapheme,
   word: Word,
   line: Line,
   lines: Line[],
   stateStr: State,
   strategy: GraphemeStrategy
-) {
-  let str = `
-word: ${word.val}
-line: ${line.val}
-lines: ${lines}
+): void {
+  graphemeCount++;
+
+  const linesStr = lines.reduce((acc, line) => `${acc}${line.val}`, "");
+  const [wordExists, lineExists, canFitChar, canFitWord] = stateStr.split("_");
+  const maxLengthStr = "*".repeat(maxLength);
+
+  const str = `
+\n\n\n\n
+_____________________
+maxLength:     ${maxLength}
+graphemeCount: ${graphemeCount}
+__
+grapheme:      ${grapheme.val} (${grapheme.type})
+word:          ${word.val}
+line:          ${line.val}
+lines:         ${linesStr}
+maxLengthStr:  ${maxLengthStr}
+__
+wordExists:    ${wordExists}
+lineExists:    ${lineExists}
+canFitChar:    ${canFitChar}
+canFitWord:    ${canFitWord}
+__
+strategy:      ${strategy.name}
+_____________________
 `;
 
-  fs.appendFileSync(dirPath, str);
-
-  console.log("word: ", word.val);
-  console.log("line: ", line.val);
-  console.log("lines: ", lines);
+  console.log(str);
 }
-
-process.on("exit", () => {
-  // Perform cleanup tasks here, such as closing database connections, etc.
-  console.log("Shutting down process...");
-});

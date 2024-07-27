@@ -1,4 +1,4 @@
-import wrapWords from "../src/index";
+import { wrap } from "../src/index";
 
 // Spec: should wrap words at a given maxLength and until maxHeight lines are reached
 // ✅ Should return a string if string length is less than or equal to maxLength
@@ -28,17 +28,17 @@ import wrapWords from "../src/index";
 describe("wordWrap", () => {
   it("Should return a string if string length is less than or equal to maxLength", () => {
     const string = "Test";
-    const result1 = wrapWords(string, string.length + 1, Infinity);
+    const result1 = wrap(string, string.length + 1, Infinity);
     expect(typeof result1).toBe("string");
 
-    const result2 = wrapWords(string, string.length, Infinity);
+    const result2 = wrap(string, string.length, Infinity);
     expect(typeof result2).toBe("string");
   });
   it.only("Should return an array of strings if string length exceeds maxLength", () => {
     // 6 + space + 4 + space + 2 + space + 1 + space + 4
     const testStr = "Hello, this is a test"; // 21
     const maxLength = 7;
-    const wrapped = wrapWords(testStr, maxLength, Infinity);
+    const wrapped = wrap(testStr, maxLength, Infinity);
     expect(wrapped).toBeInstanceOf(Array<number>);
   });
   describe("The returned array should have strings that don't exceed maxLength", () => {
@@ -46,7 +46,7 @@ describe("wordWrap", () => {
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxLength = 1;
-      const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+      const wrapped = wrap(testStr, maxLength, Infinity) as Array<string>;
 
       const lengths = wrapped.map((str) => str.length);
       lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
@@ -55,7 +55,7 @@ describe("wordWrap", () => {
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxLength = 7;
-      const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+      const wrapped = wrap(testStr, maxLength, Infinity) as Array<string>;
 
       const lengths = wrapped.map((str) => str.length);
       lengths.forEach((length) => expect(length).toBeLessThanOrEqual(maxLength));
@@ -66,7 +66,7 @@ describe("wordWrap", () => {
       const testStr = "This_is_a_long_word";
       const expectedArr = ["This", "_is_", "a_lo", "ng_w", "ord"];
       const maxLength = 4;
-      const wrapped = wrapWords(testStr, maxLength, Infinity);
+      const wrapped = wrap(testStr, maxLength, Infinity);
       expect(wrapped).toEqual(expectedArr);
     });
     it("When the input is a mix of longer and shorter words", () => {
@@ -84,7 +84,7 @@ describe("wordWrap", () => {
         "ords",
       ];
       const maxLength = 4;
-      const wrapped = wrapWords(testStr, maxLength, Infinity);
+      const wrapped = wrap(testStr, maxLength, Infinity);
       expect(wrapped).toEqual(expectedArr);
     });
   });
@@ -93,7 +93,7 @@ describe("wordWrap", () => {
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxHeight = 1;
-      const wrapped = wrapWords(testStr, 7, maxHeight) as Array<string>;
+      const wrapped = wrap(testStr, 7, maxHeight) as Array<string>;
 
       expect(wrapped.length).toBe(1);
     });
@@ -101,7 +101,7 @@ describe("wordWrap", () => {
       // 6 + space + 4 + space + 2 + space + 1 + space + 4
       const testStr = "Hello, this is a test"; // 21
       const maxHeight = 4;
-      const wrapped = wrapWords(testStr, 3, maxHeight) as Array<string>;
+      const wrapped = wrap(testStr, 3, maxHeight) as Array<string>;
 
       expect(wrapped.length).toBe(4);
     });
@@ -109,7 +109,7 @@ describe("wordWrap", () => {
   it("Each string should contain no leading or trailing spaces", () => {
     const testStr = "Hello, this is a test with a little bit more content, just to be extra sure.";
     const maxLength = 7;
-    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxLength, Infinity) as Array<string>;
     wrapped.forEach((string) => {
       expect(string.at(0)).not.toBe(" ");
       expect(string.at(-1)).not.toBe(" ");
@@ -124,7 +124,7 @@ describe("wordWrap", () => {
       "a test", // <- space at [2][1]
     ];
     const maxLength = 7;
-    const wrapped = wrapWords(testStr, maxLength, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxLength, Infinity) as Array<string>;
 
     expect(wrapped).toEqual(expected);
     expect(wrapped[1][4]).toBe(" ");
@@ -137,7 +137,7 @@ describe("wordWrap", () => {
       "this is", // <- split because of newline
       "a test",
     ];
-    const wrapped = wrapWords(testStr, Infinity, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, Infinity, Infinity) as Array<string>;
 
     wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
     expect(wrapped).toEqual(expected);
@@ -151,7 +151,7 @@ describe("wordWrap", () => {
       "this is", // <- split because of newline
       "a test",
     ];
-    const wrapped = wrapWords(testStr, Infinity, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, Infinity, Infinity) as Array<string>;
 
     wrapped.forEach((string) => expect(string.includes("\n")).toBe(false));
     expect(wrapped).toEqual(expected);
@@ -160,7 +160,7 @@ describe("wordWrap", () => {
     const testStr = "Hello,\r\r this is a test";
     const expected = ["Hello,", "this", "is a", "test"];
     const maxWidth = 6;
-    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxWidth, Infinity) as Array<string>;
 
     wrapped.forEach((string) => expect(string.includes("\r")).toBe(false));
     expect(wrapped).toEqual(expected);
@@ -169,7 +169,7 @@ describe("wordWrap", () => {
     const testStr = "Hello   this is a   test"; // 3 spaces
     const expected = ["Hello   this", "is a   test"];
     const maxWidth = 12;
-    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxWidth, Infinity) as Array<string>;
 
     expect(wrapped).toEqual(expected);
   });
@@ -177,7 +177,7 @@ describe("wordWrap", () => {
     const testStr = "Hello   this is a   test"; // 3 spaces
     const expected = ["Hello", "this is a", "test"];
     const maxWidth = 10;
-    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxWidth, Infinity) as Array<string>;
 
     expect(wrapped).toEqual(expected);
   });
@@ -185,7 +185,7 @@ describe("wordWrap", () => {
     const testStr = "Hi👋😀 this string 🧵 has emojis 😎!";
     const expected = ["Hi👋", "😀", "this", "stri", "ng", "🧵", "has", "emoj", "is", "😎!"];
     const maxWidth = 4;
-    const wrapped = wrapWords(testStr, maxWidth, Infinity) as Array<string>;
+    const wrapped = wrap(testStr, maxWidth, Infinity) as Array<string>;
 
     expect(wrapped).toEqual(expected);
   });

@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "type": "commonjs",
   "scripts": {
+    "manualTest": "ts-node scripts/manualTest.ts",
     "test": "jest",
     "test:w": "npm run test -- --watch",
     "start": "ts-node src/index.ts",
