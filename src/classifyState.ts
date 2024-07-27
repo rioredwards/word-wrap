@@ -9,7 +9,8 @@ import { Word } from "./Word";
 
 // wordExists | lineExists | canFitChar | canFitWord
 
-type State =
+export type State =
+  | "true_true_true_true"
   | "false_true_true_true"
   | "true_false_true_true"
   | "false_false_true_true"
@@ -40,9 +41,9 @@ export function classifyState(
   maxLength: number
 ): State {
   let stateStr = "";
-  stateStr += String(wordExists(word));
-  stateStr += String(lineExists(line));
-  stateStr += String(canFitChar(grapheme, word, maxLength));
-  stateStr += String(canFitWord(word, line, maxLength));
+  stateStr += `${wordExists(word)}`;
+  stateStr += `_${lineExists(line)}`;
+  stateStr += `_${canFitChar(grapheme, word, maxLength)}`;
+  stateStr += `_${canFitWord(word, line, maxLength)}`;
   return stateStr as State;
 }

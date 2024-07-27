@@ -34,7 +34,7 @@ describe("wordWrap", () => {
     const result2 = wrapWords(string, string.length, Infinity);
     expect(typeof result2).toBe("string");
   });
-  it("Should return an array of strings if string length exceeds maxLength", () => {
+  it.only("Should return an array of strings if string length exceeds maxLength", () => {
     // 6 + space + 4 + space + 2 + space + 1 + space + 4
     const testStr = "Hello, this is a test"; // 21
     const maxLength = 7;

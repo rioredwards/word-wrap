@@ -1,0 +1,1 @@
+process.env.LOGGING = "file";
