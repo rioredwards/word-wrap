@@ -27,16 +27,16 @@ _____________________
 maxLength:     ${maxLength}
 graphemeCount: ${graphemeCount}
 __
-grapheme:      ${grapheme.val} (${grapheme.type})
-word:          ${word.val}
-line:          ${line.val}
-lines:         ${linesStr}
+grapheme:      ${grapheme.val}   (${grapheme.length})  (${grapheme.type})
 maxLengthStr:  ${maxLengthStr}
+word:          ${word.val}       (${word.length})
+line:          ${line.val}       (${line.length})
+lines:         ${linesStr}
 __
-wordExists:    ${wordExists}
-lineExists:    ${lineExists}
-canFitChar:    ${canFitChar}
-canFitWord:    ${canFitWord}
+wordExists:    ${wordExists === "true" ? "✅" : "🚫"}
+lineExists:    ${lineExists === "true" ? "✅" : "🚫"}
+canFitChar:    ${canFitChar === "true" ? "✅" : "🚫"}
+canFitWord:    ${canFitWord === "true" ? "✅" : "🚫"}
 __
 strategy:      ${strategy.name}
 _____________________

@@ -19,7 +19,7 @@ export type State =
   | "true_true_false_false";
 
 function wordExists(word: Word): boolean {
-  return word.length > 0;
+  return word.hasContent();
 }
 
 function lineExists(line: Line): boolean {

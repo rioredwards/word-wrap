@@ -12,56 +12,128 @@ const ignore: GraphemeStrategy = () => {
   // Do nothing
 };
 
-const addWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const addWordThenSpace: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
   line.push(word.copy());
   word.clear();
+  word.appendSpacesLeft(1);
 };
 
-const addSpaceThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
-  word.appendSpacesRight(1);
+const addWordThenLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
   line.push(word.copy());
   word.clear();
-};
-
-const addSpaceToLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
-  line.appendSpacesRight(1);
-};
-
-const addLineThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
   lines.push(line.copy());
-  line.set(word.copy());
-  word.clear();
+  line.clear();
 };
 
-const addLineThenSpaceThenWord: GraphemeStrategy = (
+const addSpace: GraphemeStrategy = (_: Grapheme, word: Word, __: Line) => {
+  word.appendSpacesLeft(1);
+};
+
+const addLineThenWordThenSpace: GraphemeStrategy = (
   _: Grapheme,
   word: Word,
   line: Line,
   lines: Line[]
 ) => {
   lines.push(line.copy());
-  word.appendSpacesRight(1);
   line.set(word.copy());
   word.clear();
+  word.appendSpacesLeft(1);
+};
+
+const addLineThenWordThenLine: GraphemeStrategy = (
+  _: Grapheme,
+  word: Word,
+  line: Line,
+  lines: Line[]
+) => {
+  lines.push(line.copy());
+  line.set(word.copy());
+  word.clear();
+  lines.push(line.copy());
+  line.clear();
 };
 
 // TABLE REFERENCE
 // wordExists | lineExists | canFitChar | canFitWord
 const strategies: Record<string, GraphemeStrategy> = {
   // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
-  true_true_true_true: addSpaceThenWord,
+  // max:  ******
+  // word:  hi
+  // line: yo
+  // lines:
+  // intended result:
+  // word:
+  // line: yo hi
+  // lines:
+  // solution: addWordThenSpace
+  true_true_true_true: addWordThenSpace,
   // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
-  false_true_true_true: addSpaceToLine,
+  // max:  ******
+  // word:
+  // line: hi
+  // lines:
+  // intended result:
+  // word:
+  // line: hi
+  // lines:
+  // solution: addSpace
+  false_true_true_true: addSpace,
   // State 3: wordExists: ✅ | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
-  true_false_true_true: addSpaceThenWord,
+  // max:  ******
+  // word: hi
+  // line:
+  // lines:
+  // intended result:
+  // word:
+  // line: hi
+  // lines:
+  // solution: addWordThenSpace
+  true_false_true_true: addWordThenSpace,
   // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
+  // max:  ******
+  // word:
+  // line:
+  // lines:
+  // intended result:
+  // word:
+  // line:
+  // lines:
+  // solution: ignore
   false_false_true_true: ignore,
   // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
-  true_false_false_true: addWord,
+  // max:  ******
+  // word: yellow
+  // line:
+  // lines:
+  // intended result:
+  // word:
+  // line:
+  // lines: yellow
+  // solution: addWordThenLine
+  true_false_false_true: addWordThenLine,
   // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
-  true_true_true_false: addLineThenSpaceThenWord,
+  // max:  ******
+  // word: hi
+  // line: hello
+  // lines:
+  // intended result:
+  // word:
+  // line: hi
+  // lines: hello
+  // solution: addLineThenWordThenSpace
+  true_true_true_false: addLineThenWordThenSpace,
   // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
-  true_true_false_false: addLineThenWord,
+  // max:  ******
+  // word: yellow
+  // line: buenos
+  // lines:
+  // intended result:
+  // word:
+  // line:
+  // lines: buenos, yellow
+  // solution: addLineThenWordThenLine
+  true_true_false_false: addLineThenWordThenLine,
 };
 
 export default strategies;

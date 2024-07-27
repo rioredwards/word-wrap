@@ -18,13 +18,13 @@ const addWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
 };
 
 const addTabThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
-  word.appendSpacesRight(4);
+  // word.appendSpacesRight(4); FIXME
   line.push(word.copy());
   word.clear();
 };
 
 const addTabToLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
-  line.appendSpacesRight(4);
+  // line.appendSpacesRight(4); FIXME
 };
 
 const addLineThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
@@ -40,7 +40,7 @@ const addLineThenTabThenWord: GraphemeStrategy = (
   lines: Line[]
 ) => {
   lines.push(line.copy());
-  word.appendSpacesRight(4);
+  // word.appendSpacesRight(4); FIXME
   line.set(word.copy());
   word.clear();
 };

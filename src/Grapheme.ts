@@ -33,8 +33,6 @@ export class Grapheme {
   val: string;
   type: GraphemeType;
   length: number;
-  spacesBefore: string = "";
-  spacesAfter: string = "";
 
   constructor(val: string) {
     this.val = val;

@@ -35,11 +35,4 @@ export class Line {
   clear(): void {
     this.words = [];
   }
-
-  appendSpacesRight(numSpaces: number): void {
-    const lastWord = this.words.at(-1);
-    if (lastWord !== undefined) {
-      lastWord.appendSpacesRight(numSpaces);
-    }
-  }
 }
