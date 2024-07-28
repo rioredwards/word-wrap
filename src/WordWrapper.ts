@@ -4,14 +4,8 @@ import GraphemeSplitter from "grapheme-splitter";
 import { Grapheme } from "./Grapheme";
 import { Word } from "./Word";
 import { Line } from "./Line";
-import { classifyState } from "./classifyState";
+import { classifyState, State } from "./classifyState";
 import { log } from "./Logger";
-
-import readline from "node:readline/promises";
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
 
 export class WordWrapper {
   // Inputs
@@ -65,16 +59,46 @@ export class WordWrapper {
     return graphemes;
   }
 
-  wrap(): string | string[] {
+  /**
+   * This method performs the core wrapping logic. It is static and uses parameters instead of instance properties so it can be easily tested.
+   * It processes a single grapheme and moves the state forward accordingly.
+   *
+   * @static
+   * @param {Grapheme} grapheme
+   * @param {Word} word
+   * @param {Line} line
+   * @param {Line[]} lines
+   * @param {number} maxLength
+   * @returns {[State, string]}
+   */
+  static wrap(
+    grapheme: Grapheme,
+    word: Word,
+    line: Line,
+    lines: Line[],
+    maxLength: number
+  ): [State, string] {
+    // Get state (series of true's and false's)
+    const stateStr = classifyState(grapheme, word, line, maxLength);
+    // Get strategy based on grapheme & state (strategy pattern)
+    const strategy = grapheme.strategies[stateStr];
+    strategy(grapheme, word, line, lines);
+    return [stateStr, strategy.name];
+  }
+
+  /**
+   * (Main method) This calls WordWrapper.wrap() on every grapheme and returns an array of wrapped strings.
+   *
+   * @returns {(string | string[])}
+   */
+  wrapAll(): string | string[] {
     let word: Word = new Word();
-    let line: Line = new Line([], this.maxLength);
+    let line: Line = new Line();
     let lines: Line[] = [];
 
-    for (const grapheme of this.graphemes) {
-      // Get state (series of true's and false's)
-      const stateStr = classifyState(grapheme, word, line, this.maxLength);
-      const strategy = grapheme.strategies[stateStr];
-      strategy(grapheme, word, line, lines);
+    for (let i = 0; i <= this.graphemes.length; i++) {
+      const grapheme = this.graphemes[i];
+      WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
     }
 
     return lines.map((line) => line.val);
@@ -82,39 +106,32 @@ export class WordWrapper {
 
   _wrapWithLogging(): string | string[] {
     let word: Word = new Word();
-    let line: Line = new Line([], this.maxLength);
+    let line: Line = new Line();
     let lines: Line[] = [];
 
-    for (const grapheme of this.graphemes) {
-      // Get state (series of true's and false's)
-      const stateStr = classifyState(grapheme, word, line, this.maxLength);
-      const strategy = grapheme.strategies[stateStr];
+    for (let i = 0; i <= this.graphemes.length; i++) {
+      const grapheme = this.graphemes[i];
+      const [stateStr, strategy] = WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
       log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
-      strategy(grapheme, word, line, lines);
     }
 
     return lines.map((line) => line.val);
   }
 
-  async _wrapWithPromptsAndLogging(): Promise<string | string[]> {
+  async _wrapWithPromptsAndLogging(
+    getInput: (question: string) => Promise<string>
+  ): Promise<string | string[]> {
     let word: Word = new Word();
-    let line: Line = new Line([], this.maxLength);
+    let line: Line = new Line();
     let lines: Line[] = [];
 
-    for (const grapheme of this.graphemes) {
-      // Get state (series of true's and false's)
-      const stateStr = classifyState(grapheme, word, line, this.maxLength);
-      const strategy = grapheme.strategies[stateStr];
+    for (let i = 0; i <= this.graphemes.length; i++) {
+      const grapheme = this.graphemes[i];
+      const [stateStr, strategy] = WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
       log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
-      strategy(grapheme, word, line, lines);
       await getInput("Continue? (press enter)");
     }
 
     return lines.map((line) => line.val);
   }
-}
-
-async function getInput(question: string) {
-  const res = await rl.question(question);
-  return res;
 }

@@ -4,11 +4,9 @@ import { Word } from "./Word";
 
 export class Line {
   words: Word[];
-  maxWidth: number;
 
-  constructor(words: Word[], maxWidth: number = Infinity) {
+  constructor(words?: Word[]) {
     this.words = words ?? [];
-    this.maxWidth = maxWidth;
   }
 
   get val(): string {
@@ -29,7 +27,7 @@ export class Line {
 
   copy(): Line {
     const newWords = this.words.map((word) => word.copy());
-    return new Line(newWords, this.maxWidth);
+    return new Line(newWords);
   }
 
   clear(): void {

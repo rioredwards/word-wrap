@@ -9,10 +9,6 @@ export function wrap(
   if (string.length <= maxLength && !string.includes("\n")) return string;
 
   const wordWrapper = new WordWrapper(string, maxLength, maxHeight);
-  // const wrappedStrings: string[] | string = wordWrapper.wrap();
-  // Use for Debugging
-  const wrappedStrings: string[] | string = wordWrapper._wrapWithLogging();
-  // Use for manualTesting
-  // const wrappedStrings: string[] | string = await wordWrapper._wrapWithPromptsAndLogging();
+  const wrappedStrings: string[] | string = wordWrapper.wrapAll();
   return wrappedStrings;
 }

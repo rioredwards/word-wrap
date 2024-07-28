@@ -13,7 +13,7 @@ export function log(
   line: Line,
   lines: Line[],
   stateStr: State,
-  strategy: GraphemeStrategy
+  strategy: string
 ): void {
   graphemeCount++;
 
@@ -38,7 +38,7 @@ lineExists:    ${lineExists === "true" ? "✅" : "🚫"}
 canFitChar:    ${canFitChar === "true" ? "✅" : "🚫"}
 canFitWord:    ${canFitWord === "true" ? "✅" : "🚫"}
 __
-strategy:      ${strategy.name}
+strategy:      ${strategy}
 _____________________
 `;
 
