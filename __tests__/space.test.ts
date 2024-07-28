@@ -11,6 +11,25 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
     grapheme = new Grapheme(" ");
   });
 
+  describe("given a state of false_false_true_true", () => {
+    it("Should do nothing", () => {
+      const word = new Word();
+      const line = new Line();
+      const lines: Line[] = [];
+      const maxLength = Infinity;
+
+      const [stateStr, strategy] = wrap(grapheme, word, line, lines, maxLength);
+
+      // log(maxLength, grapheme, word, line, lines, stateStr, strategy);
+
+      // wordExists | lineExists | canFitChar | canFitWord
+      expect(stateStr).toBe("false_false_true_true");
+      expect(strategy).toBe("ignore");
+      expect(word.val).toBe("");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(0);
+    });
+  });
   describe("given empty initial state", () => {
     it("Should do nothing", () => {
       const word = new Word();
