@@ -4,7 +4,7 @@ import GraphemeSplitter from "grapheme-splitter";
 import { Grapheme } from "./Grapheme";
 import { Word } from "./Word";
 import { Line } from "./Line";
-import { classifyState, State } from "./classifyState";
+import { classifyState, State, StateStr } from "./classifyState";
 import { log } from "./Logger";
 
 export class WordWrapper {
@@ -69,20 +69,14 @@ export class WordWrapper {
    * @param {Line} line
    * @param {Line[]} lines
    * @param {number} maxLength
-   * @returns {[State, string]}
+   * @returns {[StateStr, string]}
    */
-  static wrap(
-    grapheme: Grapheme,
-    word: Word,
-    line: Line,
-    lines: Line[],
-    maxLength: number
-  ): [State, string] {
+  static wrap(state: State): [StateStr, string] {
     // Get state (series of true's and false's)
-    const stateStr = classifyState(grapheme, word, line, maxLength);
+    const stateStr = classifyState(state);
     // Get strategy based on grapheme & state (strategy pattern)
-    const strategy = grapheme.strategies[stateStr];
-    strategy(grapheme, word, line, lines);
+    const strategy = state.grapheme.strategies[stateStr];
+    strategy(state);
     return [stateStr, strategy.name];
   }
 
@@ -98,7 +92,14 @@ export class WordWrapper {
 
     for (let i = 0; i <= this.graphemes.length; i++) {
       const grapheme = this.graphemes[i];
-      WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
+      const state: State = {
+        grapheme,
+        word,
+        line,
+        lines,
+        maxLength: this.maxLength,
+      };
+      WordWrapper.wrap(state);
     }
 
     return lines.map((line) => line.val);
@@ -111,8 +112,15 @@ export class WordWrapper {
 
     for (let i = 0; i <= this.graphemes.length; i++) {
       const grapheme = this.graphemes[i];
-      const [stateStr, strategy] = WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
-      log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
+      const state: State = {
+        grapheme,
+        word,
+        line,
+        lines,
+        maxLength: this.maxLength,
+      };
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+      log({ ...state, stateStr, strategy });
     }
 
     return lines.map((line) => line.val);
@@ -127,8 +135,15 @@ export class WordWrapper {
 
     for (let i = 0; i <= this.graphemes.length; i++) {
       const grapheme = this.graphemes[i];
-      const [stateStr, strategy] = WordWrapper.wrap(grapheme, word, line, lines, this.maxLength);
-      log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
+      const state: State = {
+        grapheme,
+        word,
+        line,
+        lines,
+        maxLength: this.maxLength,
+      };
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+      log({ ...state, stateStr, strategy });
       await getInput("Continue? (press enter)");
     }
 

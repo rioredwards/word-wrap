@@ -3,42 +3,34 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
-import { Grapheme } from "../Grapheme";
-import { Line } from "../Line";
-import { Word } from "../Word";
 import { GraphemeStrategy } from "./graphemeTypeMaps";
 
 const ignore: GraphemeStrategy = () => {
   // Do nothing
 };
 
-const addWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const addWord: GraphemeStrategy = ({ word, line }) => {
   line.push(word.copy());
   word.clear();
 };
 
-const addTabThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const addTabThenWord: GraphemeStrategy = ({ word, line }) => {
   // word.appendSpacesRight(4); FIXME
   line.push(word.copy());
   word.clear();
 };
 
-const addTabToLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const addTabToLine: GraphemeStrategy = ({ word, line }) => {
   // line.appendSpacesRight(4); FIXME
 };
 
-const addLineThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addLineThenWord: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();
 };
 
-const addLineThenTabThenWord: GraphemeStrategy = (
-  _: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addLineThenTabThenWord: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   // word.appendSpacesRight(4); FIXME
   line.set(word.copy());

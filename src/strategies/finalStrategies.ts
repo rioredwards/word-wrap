@@ -12,24 +12,19 @@ const ignore: GraphemeStrategy = () => {
   // Do nothing
 };
 
-const addLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addLine: GraphemeStrategy = ({ line, lines }) => {
   lines.push(line.copy());
   line.clear();
 };
 
-const addWordThenLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   line.push(word.copy());
   word.clear();
   lines.push(line.copy());
   line.clear();
 };
 
-const addLineThenWordThenLine: GraphemeStrategy = (
-  _: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addLineThenWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();

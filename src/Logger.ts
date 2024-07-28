@@ -1,20 +1,21 @@
-import { Word } from "./Word";
-import { Line } from "./Line";
-import { State } from "./classifyState";
-import { GraphemeStrategy } from "./strategies/graphemeTypeMaps";
-import { Grapheme } from "./Grapheme";
+import { State, StateStr } from "./classifyState";
 
 let graphemeCount = 0;
 
-export function log(
-  maxLength: number,
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[],
-  stateStr: State,
-  strategy: string
-): void {
+interface LoggingState extends State {
+  stateStr: StateStr;
+  strategy: string;
+}
+
+export function log({
+  maxLength,
+  grapheme,
+  word,
+  line,
+  lines,
+  stateStr,
+  strategy,
+}: LoggingState): void {
   graphemeCount++;
 
   const linesStr = lines.reduce((acc, line) => `${acc}${line.val}`, "");

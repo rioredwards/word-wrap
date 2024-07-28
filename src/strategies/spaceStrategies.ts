@@ -3,57 +3,44 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
-import { Grapheme } from "../Grapheme";
-import { Line } from "../Line";
-import { Word } from "../Word";
 import { GraphemeStrategy } from "./graphemeTypeMaps";
 
 const ignore: GraphemeStrategy = () => {
   // Do nothing
 };
 
-const addWordThenSpace: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const addWordThenSpace: GraphemeStrategy = ({ word, line }) => {
   line.push(word.copy());
   word.clear();
   word.appendSpacesLeft(1);
 };
 
-const clearSpacesThenAddWordThenSpace: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+const clearSpacesThenAddWordThenSpace: GraphemeStrategy = ({ word, line }) => {
   word.clearSpacesLeft();
   line.push(word.copy());
   word.clear();
   word.appendSpacesLeft(1);
 };
 
-const addWordThenLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   line.push(word.copy());
   word.clear();
   lines.push(line.copy());
   line.clear();
 };
 
-const addSpace: GraphemeStrategy = (_: Grapheme, word: Word, __: Line) => {
+const addSpace: GraphemeStrategy = ({ word }) => {
   word.appendSpacesLeft(1);
 };
 
-const addLineThenWordThenSpace: GraphemeStrategy = (
-  _: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addLineThenWordThenSpace: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();
   word.appendSpacesLeft(1);
 };
 
-const addLineThenWordThenLine: GraphemeStrategy = (
-  _: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addLineThenWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();

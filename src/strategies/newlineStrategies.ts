@@ -3,45 +3,32 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
-import { Grapheme } from "../Grapheme";
-import { Line } from "../Line";
-import { Word } from "../Word";
 import { GraphemeStrategy } from "./graphemeTypeMaps";
 
-const addLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addLine: GraphemeStrategy = ({ line, lines }) => {
   lines.push(line.copy());
   line.clear();
 };
 
-const addWordThenLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   line.push(word.copy());
   word.clear();
   lines.push(line.copy());
   line.clear();
 };
 
-const addWordThenLineThenWordThenLine: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  addWordThenLine(grapheme, word, line, lines);
-  addWordThenLine(grapheme, word, line, lines);
+const addWordThenLineThenWordThenLine: GraphemeStrategy = (state) => {
+  addWordThenLine(state);
+  addWordThenLine(state);
 };
 
-const addLineThenWord: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
+const addLineThenWord: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();
 };
 
-const addLineThenWordThenLine: GraphemeStrategy = (
-  _: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
+const addLineThenWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
   lines.push(line.copy());
   line.set(word.copy());
   word.clear();
@@ -49,14 +36,9 @@ const addLineThenWordThenLine: GraphemeStrategy = (
   line.clear();
 };
 
-const addLineThenWordThenLineThenWord: GraphemeStrategy = (
-  grapheme: Grapheme,
-  word: Word,
-  line: Line,
-  lines: Line[]
-) => {
-  addLineThenWord(grapheme, word, line, lines);
-  addLineThenWord(grapheme, word, line, lines);
+const addLineThenWordThenLineThenWord: GraphemeStrategy = (state) => {
+  addLineThenWord(state);
+  addLineThenWord(state);
 };
 
 // TABLE REFERENCE

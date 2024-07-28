@@ -1,8 +1,6 @@
 // This file contains all code responsible for assigning graphemes their respective strategies & lengths
 
-import { Grapheme, GraphemeType } from "../Grapheme";
-import { Word } from "../Word";
-import { Line } from "../Line";
+import { GraphemeType } from "../Grapheme";
 import {
   defaultStrategies,
   emojiStrategies,
@@ -12,9 +10,10 @@ import {
   spaceStrategies,
   tabStrategies,
 } from ".";
+import { State } from "../classifyState";
 
 /** Contract that each grapheme strategy must implement */
-export type GraphemeStrategy = (grapheme: Grapheme, word: Word, line: Line, lines: Line[]) => void;
+export type GraphemeStrategy = (state: State) => void;
 export type GraphemeStateToStrategyMap = Record<string, GraphemeStrategy>;
 
 export const graphemeTypeToStrategyMap: Record<GraphemeType, GraphemeStateToStrategyMap> = {
