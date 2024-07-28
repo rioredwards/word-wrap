@@ -25,6 +25,9 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       // wordExists | lineExists | canFitChar | canFitWord
       expect(stateStr).toBe("false_false_true_true");
       expect(strategy).toBe("ignore");
+      expect(word.val).toBe("");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(0);
     });
   });
 });
