@@ -11,11 +11,17 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
 
-      "args": ["${workspaceFolder}/index.ts"],
+      "args": ["${workspaceFolder}/scripts/manualTest.ts"],
 
       "cwd": "${workspaceRoot}",
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": ["**/<node_internals>/**", "**/node_modules/**"]
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "skipFiles": [
+        "**/<node_internals>/**",
+        "**/node_modules/**",
+        "**/internal/**",
+        "${workspaceFolder}/node_modules/**/*.js",
+        "${workspaceFolder}/internal/**/*.js"
+      ]
     },
     {
       "type": "node",

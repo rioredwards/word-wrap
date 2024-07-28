@@ -65,7 +65,38 @@ export class WordWrapper {
     return graphemes;
   }
 
-  async wrap(): Promise<string | string[]> {
+  wrap(): string | string[] {
+    let word: Word = new Word();
+    let line: Line = new Line([], this.maxLength);
+    let lines: Line[] = [];
+
+    for (const grapheme of this.graphemes) {
+      // Get state (series of true's and false's)
+      const stateStr = classifyState(grapheme, word, line, this.maxLength);
+      const strategy = grapheme.strategies[stateStr];
+      strategy(grapheme, word, line, lines);
+    }
+
+    return lines.map((line) => line.val);
+  }
+
+  _wrapWithLogging(): string | string[] {
+    let word: Word = new Word();
+    let line: Line = new Line([], this.maxLength);
+    let lines: Line[] = [];
+
+    for (const grapheme of this.graphemes) {
+      // Get state (series of true's and false's)
+      const stateStr = classifyState(grapheme, word, line, this.maxLength);
+      const strategy = grapheme.strategies[stateStr];
+      log(this.maxLength, grapheme, word, line, lines, stateStr, strategy);
+      strategy(grapheme, word, line, lines);
+    }
+
+    return lines.map((line) => line.val);
+  }
+
+  async _wrapWithPromptsAndLogging(): Promise<string | string[]> {
     let word: Word = new Word();
     let line: Line = new Line([], this.maxLength);
     let lines: Line[] = [];

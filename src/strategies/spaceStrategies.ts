@@ -18,6 +18,13 @@ const addWordThenSpace: GraphemeStrategy = (_: Grapheme, word: Word, line: Line)
   word.appendSpacesLeft(1);
 };
 
+const clearSpacesThenAddWordThenSpace: GraphemeStrategy = (_: Grapheme, word: Word, line: Line) => {
+  word.clearSpacesLeft();
+  line.push(word.copy());
+  word.clear();
+  word.appendSpacesLeft(1);
+};
+
 const addWordThenLine: GraphemeStrategy = (_: Grapheme, word: Word, line: Line, lines: Line[]) => {
   line.push(word.copy());
   word.clear();
@@ -89,7 +96,7 @@ const strategies: Record<string, GraphemeStrategy> = {
   // line: hi
   // lines:
   // solution: addWordThenSpace
-  true_false_true_true: addWordThenSpace,
+  true_false_true_true: clearSpacesThenAddWordThenSpace,
   // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
   // max:  ******
   // word:

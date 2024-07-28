@@ -1,14 +1,18 @@
 import { WordWrapper } from "./WordWrapper";
 
-export async function wrap(
+export function wrap(
   string: string,
   maxLength: number,
   maxHeight: number = Infinity
-): Promise<string[] | string> {
+): string[] | string {
   // Early return if string doesn't need to be wrapped
   if (string.length <= maxLength && !string.includes("\n")) return string;
 
   const wordWrapper = new WordWrapper(string, maxLength, maxHeight);
-  const wrappedStrings: string[] | string = await wordWrapper.wrap();
+  // const wrappedStrings: string[] | string = wordWrapper.wrap();
+  // Use for Debugging
+  const wrappedStrings: string[] | string = wordWrapper._wrapWithLogging();
+  // Use for manualTesting
+  // const wrappedStrings: string[] | string = await wordWrapper._wrapWithPromptsAndLogging();
   return wrappedStrings;
 }

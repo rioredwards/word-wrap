@@ -17,12 +17,15 @@ const addWordThenGrapheme: GraphemeStrategy = (grapheme: Grapheme, word: Word, l
   word.set(grapheme);
 };
 
-const addLineAndGrapheme: GraphemeStrategy = (
+// Any time the line is empty, the spacesLeft on word should be reset
+
+const clearSpacesThenAddLineAndGrapheme: GraphemeStrategy = (
   grapheme: Grapheme,
   word: Word,
   line: Line,
   lines: Line[]
 ) => {
+  word.clearSpacesLeft();
   lines.push(line.copy());
   line.clear();
   word.push(grapheme);
@@ -53,7 +56,7 @@ const strategies: Record<string, GraphemeStrategy> = {
   // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
   true_false_false_true: addWordThenGrapheme,
   // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
-  true_true_true_false: addLineAndGrapheme,
+  true_true_true_false: clearSpacesThenAddLineAndGrapheme,
   // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
   true_true_false_false: addLineThenWordThenGrapheme,
 };
