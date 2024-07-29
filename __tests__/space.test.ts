@@ -1,6 +1,6 @@
 import { Grapheme } from "../src/Grapheme";
 import { WordWrapper } from "../src/WordWrapper";
-import { generateState } from "./__mocks__/states.mock";
+import { generateStateFromString } from "./__mocks__/states.mock";
 
 describe("WordWrapper.wrap(), when wrapping on a space", () => {
   let grapheme = new Grapheme(" ");
@@ -11,7 +11,16 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
   describe("given a state of true_true_true_true", () => {
     it("Should addWordThenSpace", () => {
       // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
-      const state = generateState(grapheme, "true_true_true_true");
+      // max:  ******
+      // word:  hi
+      // line: yo
+      // lines:
+      // intended result:
+      // word:
+      // line: yo hi
+      // lines:
+      // solution: addWordThenSpace
+      const state = generateStateFromString(grapheme, "true_true_true_true");
       const [stateStr, strategy] = WordWrapper.wrap(state);
 
       const { word, line, lines } = state;

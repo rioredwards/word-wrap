@@ -26,8 +26,7 @@ export class WordWrapper {
     // Emojis (🙂) and other special characters (é) are made up of multiple "code points" which result in inconsistent/misleading length measurements.
     // Graphemes address this. Graphemes are individual unicode characters (letters, etc...), grouped in a way that accounts for Emojis and other multi-code point characters. See:https://github.com/orling/grapheme-splitter
     // Basically, as long as chars are grouped by grapheme, we can get accurate lengths for strings and won't break emojis 👍
-    const graphemeStrings = this.splitByGraphemes(sanitizedString);
-    this.graphemes = graphemeStrings.map((str) => new Grapheme(str));
+    this.graphemes = WordWrapper.splitStringIntoGraphemes(sanitizedString);
   }
 
   /** Ensures input string is a string, and maxLength and maxHeight are numbers greater than 1 */
@@ -53,9 +52,10 @@ export class WordWrapper {
   }
 
   /** Splits a string into an array of Graphemes. A Grapheme is one or multiple unicode code points, grouped by their actual, visual representation. This is important because some characters are made up of multiple code points (e.g. Emojis "🙂" and other special characters "é"). Properly grouping the code points for these is essential for treating them as a single unit. */
-  splitByGraphemes(string: string): string[] {
+  static splitStringIntoGraphemes(string: string): Grapheme[] {
     const splitter = new GraphemeSplitter();
-    const graphemes: string[] = splitter.splitGraphemes(string);
+    const stringsSplitByGrapheme: string[] = splitter.splitGraphemes(string);
+    const graphemes = stringsSplitByGrapheme.map((str) => new Grapheme(str));
     return graphemes;
   }
 
