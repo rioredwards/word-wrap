@@ -1,4 +1,4 @@
-import { State, StateStr } from "../../src/classifyState";
+import { State } from "../../src/classifyState";
 import { Grapheme } from "../../src/Grapheme";
 import { Line } from "../../src/Line";
 import { Word } from "../../src/Word";
@@ -6,8 +6,25 @@ import { WordWrapper } from "../../src/WordWrapper";
 
 // Helpers
 export function createWordFromString(val: string) {
-  const graphemesForWord = WordWrapper.splitStringIntoGraphemes(val);
-  const word = new Word(graphemesForWord);
+  // If val has spaces at the beginning, remove them from the string and convert them into spacesLeft.
+  // In the actual implementation, spaces are never included in the word string, but rather stored in the spacesLeft property.
+  // This is because they may or may not be committed to the string when wrapping
+  let valWithoutSpaces: string;
+  let spaces: string;
+
+  if (val.includes(" ")) {
+    const lastSpaceIdx = val.lastIndexOf(" ");
+    spaces = val.substring(0, lastSpaceIdx + 1);
+    if (spaces.trim().length !== 0)
+      throw new Error("Spaces must only be placed at beginning of word");
+    valWithoutSpaces = val.trim();
+  } else {
+    valWithoutSpaces = val;
+    spaces = "";
+  }
+
+  const graphemesForWord = WordWrapper.splitStringIntoGraphemes(valWithoutSpaces);
+  const word = new Word(graphemesForWord, spaces);
   return word;
 }
 
@@ -27,7 +44,7 @@ export function createLinesFromStrings(vals: string[]) {
  * Input a series of primitives which will be turned into objects of their respective types.
  *
  * @export
- * @param {string} graphemeInput
+ * @param {string} graphemeVal
  * @param {string} wordInput
  * @param {string} lineInput
  * @param {string[]} linesInput
@@ -50,82 +67,3 @@ export function generateStateFromPrimitives(
   };
   return state;
 }
-
-// /**
-//  * Helper function for creating an entire state configuration to use in testing.
-//  * Input a stateStr to get a state config which matches.
-//  *
-//  * @param {StateStr} stateStr
-//  * @returns {(State | void)}
-//  */
-// export function generateStateFromString(stateStr: StateStr): State {
-//   const grapheme = new Grapheme("A");
-
-//   switch (stateStr) {
-//     // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
-//     case "true_true_true_true":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(1),
-//         line: newLineOfLength(1),
-//         maxLength: Infinity,
-//         lines: [],
-//       };
-//     // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
-//     case "false_true_true_true":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(0),
-//         line: newLineOfLength(1),
-//         maxLength: Infinity,
-//         lines: [],
-//       };
-//     // State 3: wordExists: ✅ | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
-//     case "true_false_true_true":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(1),
-//         line: newLineOfLength(0),
-//         maxLength: Infinity,
-//         lines: [],
-//       };
-//     // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
-//     case "false_false_true_true":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(0),
-//         line: newLineOfLength(0),
-//         maxLength: Infinity,
-//         lines: [],
-//       };
-//     // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
-//     case "true_false_false_true":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(1),
-//         line: newLineOfLength(0),
-//         maxLength: 1,
-//         lines: [],
-//       };
-//     // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
-//     case "true_true_true_false":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(1),
-//         line: newLineOfLength(2),
-//         maxLength: 2,
-//         lines: [],
-//       };
-//     // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
-//     case "true_true_false_false":
-//       return {
-//         grapheme,
-//         word: newWordOfLength(2),
-//         line: newLineOfLength(2),
-//         maxLength: 2,
-//         lines: [],
-//       };
-//     default:
-//       throw new Error("Invalid inputs for generateState");
-//   }
-// }

@@ -1,13 +1,7 @@
-import { Grapheme } from "../src/Grapheme";
 import { WordWrapper } from "../src/WordWrapper";
-import { generateStateFromString } from "./__mocks__/states.mock";
+import { generateStateFromPrimitives } from "./__mocks__/states.mock";
 
 describe("WordWrapper.wrap(), when wrapping on a space", () => {
-  let grapheme = new Grapheme(" ");
-  beforeEach(() => {
-    grapheme = new Grapheme(" ");
-  });
-
   describe("given a state of true_true_true_true", () => {
     it("Should addWordThenSpace", () => {
       // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
@@ -20,7 +14,7 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       // line: yo hi
       // lines:
       // solution: addWordThenSpace
-      const state = generateStateFromString(grapheme, "true_true_true_true");
+      const state = generateStateFromPrimitives(" ", " hi", "yo", [], 6);
       const [stateStr, strategy] = WordWrapper.wrap(state);
 
       const { word, line, lines } = state;
@@ -28,7 +22,7 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(stateStr).toBe("true_true_true_true");
       expect(strategy).toBe("addWordThenSpace");
       expect(word.val).toBe(" ");
-      expect(line.val).toBe("AA");
+      expect(line.val).toBe("yo hi");
       expect(lines.length).toBe(0);
     });
   });
