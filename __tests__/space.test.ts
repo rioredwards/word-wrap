@@ -148,4 +148,30 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(lines[0].val).toBe("hello");
     });
   });
+  describe("given a state of true_true_false_false", () => {
+    it("Should addLineThenWordThenLine", () => {
+      // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
+      // max:  ******
+      // word: yellow
+      // line: buenos
+      // lines:
+      // intended result:
+      // word:
+      // line:
+      // lines: buenos, yellow
+      // solution: addLineThenWordThenLine
+      const state = generateStateFromPrimitives(" ", "yellow", "buenos", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_true_false_false");
+      expect(strategy).toBe("addLineThenWordThenLine");
+      expect(word.val).toBe("");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(2);
+      expect(lines[0].val).toBe("buenos");
+      expect(lines[1].val).toBe("yellow");
+    });
+  });
 });
