@@ -53,16 +53,6 @@ const addLineThenWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
 const strategies: Record<string, GraphemeStrategy> = {
   true_true_true_true: addWordThenSpace,
   false_true_true_true: addSpace,
-  // State 3: wordExists: ✅ | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
-  // max:  ******
-  // word: hi
-  // line:
-  // lines:
-  // intended result:
-  // word:
-  // line: hi
-  // lines:
-  // solution: addWordThenSpace
   true_false_true_true: clearSpacesThenAddWordThenSpace,
   // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
   // max:  ******
