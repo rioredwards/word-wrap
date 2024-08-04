@@ -51,12 +51,19 @@ const addLineThenWordThenLine: GraphemeStrategy = ({ word, line, lines }) => {
 // TABLE REFERENCE
 // wordExists | lineExists | canFitChar | canFitWord
 const strategies: Record<string, GraphemeStrategy> = {
+  // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
   true_true_true_true: addWordThenSpace,
+  // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
   false_true_true_true: addSpace,
+  // State 3: wordExists: ✅ | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
   true_false_true_true: clearSpacesThenAddWordThenSpace,
+  // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
   false_false_true_true: ignore,
+  // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
   true_false_false_true: addWordThenLine,
+  // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
   true_true_true_false: addLineThenWordThenSpace,
+  // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
   true_true_false_false: addLineThenWordThenLine,
 };
 

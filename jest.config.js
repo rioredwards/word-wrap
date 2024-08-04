@@ -6,6 +6,7 @@ const config = {
   testEnvironment: "node",
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
   setupFiles: ["<rootDir>/env.js"],
+  testPathIgnorePatterns: ["__mocks__"],
 };
 
 module.exports = config;
