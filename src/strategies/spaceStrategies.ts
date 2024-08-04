@@ -54,16 +54,6 @@ const strategies: Record<string, GraphemeStrategy> = {
   true_true_true_true: addWordThenSpace,
   false_true_true_true: addSpace,
   true_false_true_true: clearSpacesThenAddWordThenSpace,
-  // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
-  // max:  ******
-  // word:
-  // line:
-  // lines:
-  // intended result:
-  // word:
-  // line:
-  // lines:
-  // solution: ignore
   false_false_true_true: ignore,
   // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
   // max:  ******

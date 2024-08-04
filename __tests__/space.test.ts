@@ -74,4 +74,28 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(lines.length).toBe(0);
     });
   });
+  describe("given a state of false_false_true_true", () => {
+    it("Should clearSpacesThenAddWordThenSpace", () => {
+      // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
+      // max:  ******
+      // word:
+      // line:
+      // lines:
+      // intended result:
+      // word:
+      // line:
+      // lines:
+      // solution: ignore
+      const state = generateStateFromPrimitives(" ", "", "", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("false_false_true_true");
+      expect(strategy).toBe("ignore");
+      expect(word.val).toBe("");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(0);
+    });
+  });
 });
