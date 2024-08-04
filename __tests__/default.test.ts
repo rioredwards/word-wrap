@@ -77,4 +77,29 @@ describe("WordWrapper.wrap(), when wrapping on a regular character", () => {
       expect(lines.length).toBe(0);
     });
   });
+  describe("given a state of false_false_true_true", () => {
+    it("Should addGrapheme", () => {
+      // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
+      // max:  ******
+      // grapheme: Z
+      // word:
+      // line:
+      // lines:
+      // intended result:
+      // word: yoZ
+      // line: hi
+      // lines:
+      // solution: addGrapheme
+      const state = generateStateFromPrimitives("Z", "", "", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("false_false_true_true");
+      expect(strategy).toBe("addGrapheme");
+      expect(word.val).toBe("Z");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(0);
+    });
+  });
 });
