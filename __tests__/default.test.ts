@@ -153,4 +153,32 @@ describe("WordWrapper.wrap(), when wrapping on a regular character", () => {
       expect(lines[0].val).toBe("hello");
     });
   });
+  describe("given a state of true_true_false_false", () => {
+    it("Should addLineThenWordThenGrapheme", () => {
+      // State 7: wordExists: ✅ | lineExists: ✅ | canFitChar: 🚫 | canFitWord: 🚫
+      // max:  ******
+      // grapheme: Z
+      // word: yellow
+      // line: yo
+      // lines:
+      // intended result:
+      // word: Z
+      // line: yellow
+      // lines: yo
+      // solution: addLineThenWordThenGrapheme
+
+      // TODO: deal with words that are too long merely because of spacesLeft: if word can't fit and word has spacesLeft, then add line, clear spacesLeft and add grapheme to word
+      const state = generateStateFromPrimitives("Z", "yellow", "yo", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_true_false_false");
+      expect(strategy).toBe("addLineThenWordThenGrapheme");
+      expect(word.val).toBe("Z");
+      expect(line.val).toBe("yellow");
+      expect(lines.length).toBe(1);
+      expect(lines[0].val).toBe("yo");
+    });
+  });
 });
