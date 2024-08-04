@@ -120,6 +120,32 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(word.val).toBe("");
       expect(line.val).toBe("");
       expect(lines.length).toBe(1);
+      expect(lines[0].val).toBe("yellow");
+    });
+  });
+  describe("given a state of true_true_true_false", () => {
+    it("Should addLineThenWordThenSpace", () => {
+      // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
+      // max:  ******
+      // word: hi
+      // line: hello
+      // lines:
+      // intended result:
+      // word:
+      // line: hi
+      // lines: hello
+      // solution: addLineThenWordThenSpace
+      const state = generateStateFromPrimitives(" ", "hi", "hello", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_true_true_false");
+      expect(strategy).toBe("addLineThenWordThenSpace");
+      expect(word.val).toBe(" ");
+      expect(line.val).toBe("hi");
+      expect(lines.length).toBe(1);
+      expect(lines[0].val).toBe("hello");
     });
   });
 });
