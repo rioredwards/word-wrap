@@ -102,4 +102,29 @@ describe("WordWrapper.wrap(), when wrapping on a regular character", () => {
       expect(lines.length).toBe(0);
     });
   });
+  describe("given a state of true_false_false_true", () => {
+    it("Should addWordThenGrapheme", () => {
+      // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
+      // max:  ******
+      // grapheme: Z
+      // word: yellow
+      // line:
+      // lines:
+      // intended result:
+      // word: yoZ
+      // line: hi
+      // lines:
+      // solution: addGrapheme
+      const state = generateStateFromPrimitives("Z", "yellow", "", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_false_false_true");
+      expect(strategy).toBe("addWordThenGrapheme");
+      expect(word.val).toBe("Z");
+      expect(line.val).toBe("yellow");
+      expect(lines.length).toBe(0);
+    });
+  });
 });
