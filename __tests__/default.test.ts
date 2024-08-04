@@ -127,4 +127,30 @@ describe("WordWrapper.wrap(), when wrapping on a regular character", () => {
       expect(lines.length).toBe(0);
     });
   });
+  describe("given a state of true_true_false_false", () => {
+    it("Should clearSpacesThenAddLineAndGrapheme", () => {
+      // State 6: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: 🚫
+      // max:  ******
+      // grapheme: Z
+      // word:  hi
+      // line: hello
+      // lines:
+      // intended result:
+      // word: hiZ
+      // line:
+      // lines: hello
+      // solution: addGrapheme
+      const state = generateStateFromPrimitives("Z", " hi", "hello", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_true_true_false");
+      expect(strategy).toBe("clearSpacesThenAddLineAndGrapheme");
+      expect(word.val).toBe("hiZ");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(1);
+      expect(lines[0].val).toBe("hello");
+    });
+  });
 });
