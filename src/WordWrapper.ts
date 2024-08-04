@@ -60,15 +60,11 @@ export class WordWrapper {
   }
 
   /**
-   * This method performs the core wrapping logic. It is static and uses parameters instead of instance properties so it can be easily tested.
-   * It processes a single grapheme and moves the state forward accordingly.
+   * This method performs the core wrapping logic. It processes a single grapheme and moves the state forward accordingly.
+   * It is static and uses parameters instead of instance properties so it can be easily tested.
    *
    * @static
-   * @param {Grapheme} grapheme
-   * @param {Word} word
-   * @param {Line} line
-   * @param {Line[]} lines
-   * @param {number} maxLength
+   * @param {State} state
    * @returns {[StateStr, string]}
    */
   static wrap(state: State): [StateStr, string] {
@@ -77,6 +73,7 @@ export class WordWrapper {
     // Get strategy based on grapheme & state (strategy pattern)
     const strategy = state.grapheme.strategies[stateStr];
     strategy(state);
+    // Return is purely for testing (state parameter is mutated).
     return [stateStr, strategy.name];
   }
 

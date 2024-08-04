@@ -26,4 +26,28 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(lines.length).toBe(0);
     });
   });
+  describe("given a state of false_true_true_true", () => {
+    it("Should addSpace", () => {
+      // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
+      // max:  ******
+      // word:
+      // line: hi
+      // lines:
+      // intended result:
+      // word:
+      // line: hi
+      // lines:
+      // solution: addSpace
+      const state = generateStateFromPrimitives(" ", "", "hi", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("false_true_true_true");
+      expect(strategy).toBe("addSpace");
+      expect(word.val).toBe(" ");
+      expect(line.val).toBe("hi");
+      expect(lines.length).toBe(0);
+    });
+  });
 });

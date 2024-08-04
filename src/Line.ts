@@ -17,7 +17,9 @@ export class Line {
     return this.words.reduce((acc, word) => acc + word.length, 0);
   }
 
+  /** Overwrite any existing words, and replace with given word. Also clears spaces to left of word.  */
   set(word: Word): void {
+    word.clearSpacesLeft();
     this.words = [word];
   }
 
