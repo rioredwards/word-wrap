@@ -75,7 +75,7 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
     });
   });
   describe("given a state of false_false_true_true", () => {
-    it("Should clearSpacesThenAddWordThenSpace", () => {
+    it("Should ignore", () => {
       // State 4: wordExists: 🚫 | lineExists: 🚫 | canFitChar: ✅ | canFitWord: ✅
       // max:  ******
       // word:
@@ -96,6 +96,30 @@ describe("WordWrapper.wrap(), when wrapping on a space", () => {
       expect(word.val).toBe("");
       expect(line.val).toBe("");
       expect(lines.length).toBe(0);
+    });
+  });
+  describe("given a state of true_false_false_true", () => {
+    it("Should addWordThenLine", () => {
+      // State 5: wordExists: ✅ | lineExists: 🚫 | canFitChar: 🚫 | canFitWord: ✅
+      // max:  ******
+      // word: yellow
+      // line:
+      // lines:
+      // intended result:
+      // word:
+      // line:
+      // lines: yellow
+      // solution: addWordThenLine
+      const state = generateStateFromPrimitives(" ", "yellow", "", [], 6);
+      const [stateStr, strategy] = WordWrapper.wrap(state);
+
+      const { word, line, lines } = state;
+
+      expect(stateStr).toBe("true_false_false_true");
+      expect(strategy).toBe("addWordThenLine");
+      expect(word.val).toBe("");
+      expect(line.val).toBe("");
+      expect(lines.length).toBe(1);
     });
   });
 });
