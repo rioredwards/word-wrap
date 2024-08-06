@@ -1,11 +1,11 @@
 // The main class which does all of the word-wrapping
 
 import GraphemeSplitter from "grapheme-splitter";
-import { Grapheme } from "./Grapheme";
-import { Word } from "./Word";
-import { Line } from "./Line";
-import { classifyState, State, StateStr } from "./classifyState";
-import { log } from "./Logger";
+import { Grapheme } from "./Grapheme.js";
+import { Word } from "./Word.js";
+import { Line } from "./Line.js";
+import { classifyState, type State, type StateStr } from "./classifyState.js";
+import { log } from "./Logger.js";
 
 export class WordWrapper {
   // Inputs

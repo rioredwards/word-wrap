@@ -1,6 +1,6 @@
 // This file contains all code responsible for assigning graphemes their respective strategies & lengths
 
-import { GraphemeType } from "../Grapheme";
+import { type GraphemeType } from "../Grapheme.js";
 import {
   defaultStrategies,
   emojiStrategies,
@@ -9,8 +9,8 @@ import {
   newlineStrategies,
   spaceStrategies,
   tabStrategies,
-} from ".";
-import { State } from "../classifyState";
+} from "./index.js";
+import { type State } from "../classifyState.js";
 
 /** Contract that each grapheme strategy must implement */
 export type GraphemeStrategy = (state: State) => void;

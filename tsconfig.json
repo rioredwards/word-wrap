@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "module": "node16",
+    "target": "es2020", // set to the *lowest* target you support
     "strict": true,
-    "moduleResolution": "node",
-    "types": ["node", "jest"]
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "outDir": "./dist"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

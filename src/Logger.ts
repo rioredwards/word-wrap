@@ -1,4 +1,4 @@
-import { State, StateStr } from "./classifyState";
+import type { State, StateStr } from "./classifyState.js";
 
 let graphemeCount = 0;
 

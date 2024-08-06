@@ -3,7 +3,7 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
-import { GraphemeStrategy } from "./graphemeTypeMaps";
+import { type GraphemeStrategy } from "./graphemeTypeMaps.js";
 
 const addLine: GraphemeStrategy = ({ line, lines }) => {
   lines.push(line.copy());

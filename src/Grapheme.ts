@@ -1,8 +1,8 @@
 import {
-  GraphemeStateToStrategyMap,
+  type GraphemeStateToStrategyMap,
   graphemeLengthMap,
   graphemeTypeToStrategyMap,
-} from "./strategies/graphemeTypeMaps";
+} from "./strategies/graphemeTypeMaps.js";
 
 export type GraphemeType = "default" | "space" | "newLine" | "ignore" | "tab" | "emoji" | "final";
 

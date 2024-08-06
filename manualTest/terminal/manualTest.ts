@@ -1,5 +1,5 @@
 import readline from "node:readline/promises";
-import { WordWrapper } from "../src/WordWrapper";
+import { WordWrapper } from "../../src/WordWrapper";
 
 const rl = readline.createInterface({
   input: process.stdin,

@@ -1,6 +1,6 @@
 /** Represents a series of Words or Spaces */
 
-import { Word } from "./Word";
+import { Word } from "./Word.js";
 
 export class Line {
   words: Word[];

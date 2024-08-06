@@ -1,6 +1,6 @@
 /** Represents a group of non-whitespace characters */
 
-import { Grapheme } from "./Grapheme";
+import { Grapheme } from "./Grapheme.js";
 
 export class Word {
   private spacesLeft: string = "";

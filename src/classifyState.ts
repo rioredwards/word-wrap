@@ -4,9 +4,9 @@
 // wordExists | lineExists | canFitChar | canFitWord
 // This necessary for implementing Table-Driven-Development and the Strategy Pattern.
 
-import { Grapheme } from "./Grapheme";
-import { Line } from "./Line";
-import { Word } from "./Word";
+import { Grapheme } from "./Grapheme.js";
+import { Line } from "./Line.js";
+import { Word } from "./Word.js";
 
 export interface State {
   grapheme: Grapheme;
