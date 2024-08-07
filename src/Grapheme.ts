@@ -4,14 +4,12 @@ import {
   graphemeTypeToStrategyMap,
 } from "./strategies/graphemeTypeMaps.js";
 
-export type GraphemeType = "default" | "space" | "newLine" | "ignore" | "tab" | "emoji" | "final";
+export type GraphemeType = "default" | "space" | "newLine" | "ignore" | "tab" | "emoji";
 
 const EMOJI_REGEX = /\p{Emoji_Presentation}/u;
 
 const classifyGrapheme = (val: string): GraphemeType => {
   switch (true) {
-    case val === undefined:
-      return "final";
     case val === " ":
       return "space";
     case val === "\n":

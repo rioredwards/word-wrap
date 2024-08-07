@@ -4,7 +4,14 @@ import GraphemeSplitter from "grapheme-splitter";
 import { Grapheme } from "./Grapheme.js";
 import { Word } from "./Word.js";
 import { Line } from "./Line.js";
-import { classifyState, type State, type StateStr } from "./classifyState.js";
+import {
+  classifyFinalState,
+  classifyState,
+  FinalState,
+  type State,
+  type StateStr,
+} from "./classifyState.js";
+import finalStrategies from "./strategies/finalStrategies.js";
 import { log } from "./Logger.js";
 
 export class WordWrapper {
@@ -98,6 +105,17 @@ export class WordWrapper {
       };
       WordWrapper.wrap(state);
     }
+
+    // Handle final word and line
+    const state: FinalState = {
+      word,
+      line,
+      lines,
+      maxLength: this.maxLength,
+    };
+    const stateStr = classifyFinalState(state);
+    const strategy = finalStrategies[stateStr];
+    strategy(state);
 
     return lines.map((line) => line.val);
   }

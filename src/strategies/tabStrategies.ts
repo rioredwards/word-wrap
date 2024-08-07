@@ -3,6 +3,7 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
+import { StateStr } from "../classifyState.js";
 import { type GraphemeStrategy } from "./graphemeTypeMaps.js";
 
 const ignore: GraphemeStrategy = () => {
@@ -39,7 +40,7 @@ const addLineThenTabThenWord: GraphemeStrategy = ({ word, line, lines }) => {
 
 // TABLE REFERENCE
 // wordExists | lineExists | canFitChar | canFitWord
-const strategies: Record<string, GraphemeStrategy> = {
+const strategies: Record<StateStr, GraphemeStrategy> = {
   // State 1: wordExists: ✅ | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅
   true_true_true_true: addTabThenWord,
   // State 2: wordExists: 🚫 | lineExists: ✅ | canFitChar: ✅ | canFitWord: ✅

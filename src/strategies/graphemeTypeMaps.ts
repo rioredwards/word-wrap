@@ -4,7 +4,6 @@ import { type GraphemeType } from "../Grapheme.js";
 import {
   defaultStrategies,
   emojiStrategies,
-  finalStrategies,
   ignoreStrategies,
   newlineStrategies,
   spaceStrategies,
@@ -19,7 +18,6 @@ export type GraphemeStateToStrategyMap = Record<string, GraphemeStrategy>;
 export const graphemeTypeToStrategyMap: Record<GraphemeType, GraphemeStateToStrategyMap> = {
   default: defaultStrategies,
   space: spaceStrategies,
-  final: finalStrategies,
   newLine: newlineStrategies,
   tab: tabStrategies,
   emoji: emojiStrategies,
@@ -33,5 +31,4 @@ export const graphemeLengthMap: Record<GraphemeType, number> = {
   tab: 4,
   emoji: 2,
   ignore: 0,
-  final: 1, // TODO This might cause issues...
 };

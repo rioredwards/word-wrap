@@ -16,6 +16,8 @@ export interface State {
   maxLength: number;
 }
 
+export type FinalState = Omit<State, "grapheme">;
+
 // wordExists | lineExists | canFitChar | canFitWord
 export type StateStr =
   | "true_true_true_true"
@@ -26,27 +28,43 @@ export type StateStr =
   | "true_true_true_false"
   | "true_true_false_false";
 
-function wordExists({ word }: State): boolean {
+// wordExists | lineExists | canFitWord
+export type FinalStateStr =
+  | "true_true_true"
+  | "false_true_true"
+  | "true_false_true"
+  | "true_true_false"
+  | "false_false_true";
+
+function wordExists(word: Word): boolean {
   return word.hasContent();
 }
 
-function lineExists({ line }: State): boolean {
+function lineExists(line: Line): boolean {
   return line.length > 0;
 }
 
-function canFitChar({ grapheme, word, maxLength }: State): boolean {
+function canFitChar(grapheme: Grapheme, word: Word, maxLength: number): boolean {
   return grapheme.length + word.length <= maxLength;
 }
 
-function canFitWord({ word, line, maxLength }: State): boolean {
+function canFitWord(word: Word, line: Line, maxLength: number): boolean {
   return word.length + line.length <= maxLength;
 }
 
-export function classifyState(state: State): StateStr {
+export function classifyFinalState({ word, line, maxLength }: FinalState): FinalStateStr {
   let stateStr = "";
-  stateStr += `${wordExists(state)}`;
-  stateStr += `_${lineExists(state)}`;
-  stateStr += `_${canFitChar(state)}`;
-  stateStr += `_${canFitWord(state)}`;
+  stateStr += `${wordExists(word)}`;
+  stateStr += `_${lineExists(line)}`;
+  stateStr += `_${canFitWord(word, line, maxLength)}`;
+  return stateStr as FinalStateStr;
+}
+
+export function classifyState({ grapheme, word, line, maxLength }: State): StateStr {
+  let stateStr = "";
+  stateStr += `${wordExists(word)}`;
+  stateStr += `_${lineExists(line)}`;
+  stateStr += `_${canFitChar(grapheme, word, maxLength)}`;
+  stateStr += `_${canFitWord(word, line, maxLength)}`;
   return stateStr as StateStr;
 }
