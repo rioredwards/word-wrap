@@ -7,7 +7,6 @@
     "strict": true,
     "outDir": "./dist",
     "skipLibCheck": true,
-    "noUncheckedIndexedAccess": true,
     "noEmit": true
   },
   "include": ["src/index.ts"],

@@ -87,7 +87,7 @@ export class WordWrapper {
     let line: Line = new Line();
     let lines: Line[] = [];
 
-    for (let i = 0; i <= this.graphemes.length; i++) {
+    for (let i = 0; i < this.graphemes.length; i++) {
       const grapheme = this.graphemes[i];
       const state: State = {
         grapheme,
