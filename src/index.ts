@@ -1,7 +1,5 @@
-import { WordWrapper } from "./WordWrapper.js";
-
 export function test() {
-  console.log("hello world! (from word-wrap)");
+  return "hello world!!! 😎 (from word-wrap)";
 }
 
 // function wrap(string: string, maxLength: number, maxHeight: number = Infinity): string[] | string {

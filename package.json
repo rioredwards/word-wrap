@@ -1,33 +1,27 @@
 {
   "name": "word-wrap",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "dist/index.js",
-  "type": "module",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "test:w": "npm run test -- --watch",
-    "start": "ts-node src/index.ts",
-    "start:w": "nodemon -q --exec ts-node src/index.ts",
-    "build": "tsc",
-    "manualTest:terminal": "ts-node scripts/manualTest.ts",
-    "manualTest:browser": "tsc -p ./manualTest/browser/tsconfig.json"
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "release": "pnpm run build && changeset publish",
+    "lint": "tsc"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "grapheme-splitter": "^1.0.4"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.12",
-    "esbuild": "0.23.0",
-    "jest": "^29.7.0",
-    "lite-server": "^2.6.1",
-    "ts-jest": "^29.2.3",
-    "ts-node": "^10.9.2",
+    "@changesets/cli": "^2.27.7",
+    "tsup": "^8.2.4",
     "typescript": "^5.5.4"
-  }
+  },
+  "packageManager": "pnpm@8.10.5+sha512.9c161f433d85551c58f1b3a10b18cc3df72b5a02d2caee6566cc05b6f20addef947e795d90c39033bf92de55177ead69d87f62a9daadc91e7a2e3b58f49353a0"
 }

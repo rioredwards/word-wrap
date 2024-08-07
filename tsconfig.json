@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "module": "node16",
-    "target": "es2020", // set to the *lowest* target you support
+    "target": "ES2016",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "verbatimModuleSyntax": true,
-    "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true
   },
-  "include": ["src"],
+  "include": ["src/index.ts"],
   "exclude": ["node_modules"]
 }

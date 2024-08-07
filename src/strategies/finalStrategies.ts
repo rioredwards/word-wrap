@@ -3,9 +3,6 @@
 // Implemented using "Table-Driven-Development"
 // Basically, the key for each strategy represents a configuration of the state variables
 
-import { Grapheme } from "../Grapheme.js";
-import { Line } from "../Line.js";
-import { Word } from "../Word.js";
 import { type GraphemeStrategy } from "./graphemeTypeMaps.js";
 
 const ignore: GraphemeStrategy = () => {

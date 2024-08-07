@@ -1,3 +1,3 @@
-import { test } from "../../../dist/index.js";
+import { test } from "word-wrap";
 
 console.log(test());
