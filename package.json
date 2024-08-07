@@ -8,6 +8,9 @@
     "test": "jest",
     "test:w": "npm run test -- --watch",
     "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsc -p ./tsconfig.dev.json",
+    "dev:w": "tsc -p ./tsconfig.dev.json --watch",
+    "dev:webview": "rimraf ./dist/* && pnpm dev && pnpm -r dev:w",
     "release": "pnpm run build && changeset publish",
     "lint": "tsc"
   },
@@ -20,8 +23,10 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
+    "rimraf": "^6.0.1",
     "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "webview-test": "workspace:^0.0.1"
   },
   "packageManager": "pnpm@8.10.5+sha512.9c161f433d85551c58f1b3a10b18cc3df72b5a02d2caee6566cc05b6f20addef947e795d90c39033bf92de55177ead69d87f62a9daadc91e7a2e3b58f49353a0"
 }

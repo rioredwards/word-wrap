@@ -1,5 +1,5 @@
 export function test() {
-  return "hello world!!! 😎 (from word-wrap)";
+  return "hello world! 😎 (from word-wrap)";
 }
 
 // function wrap(string: string, maxLength: number, maxHeight: number = Infinity): string[] | string {
